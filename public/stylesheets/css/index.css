@@ -5,7 +5,7 @@
 }
 
 #showcase {
-  background-image: url("../../images/pexels-abdullah-ghatasheh-1631677.jpg");
+  background-image: url("../../images/pexels-snapwire-234507.jpg");
   background-size: cover;
   height: 100vh;
   background-position: center;
@@ -26,8 +26,8 @@
 
 }
 
-.section-a{
+#intro-text{
   padding: 25px 25px 25px 25px;
-  background-color: #ef8355;
   text-align: center;
+  color: white;
 }
