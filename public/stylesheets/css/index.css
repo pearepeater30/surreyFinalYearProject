@@ -2,6 +2,9 @@
   margin: 0px;
   font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
   line-height: 1.6;
+  animation: fadInAnimation ease 2s;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
 }
 
 #showcase {
@@ -30,4 +33,13 @@
   padding: 25px 25px 25px 25px;
   text-align: center;
   color: white;
+}
+
+@keyframes fadInAnimation {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
