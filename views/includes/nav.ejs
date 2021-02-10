@@ -1,17 +1,28 @@
-<div class="navbar is-primary" role="navigation" aria-label="main navigation">
+<nav class="navbar is-primary">
   <div class="navbar-brand">
-    <a href="" class="navbar-item">
-      <img src="images/virus.svg">
+    <a href="/" class="navbar-item">
+      <img src="images/virus.svg" />
+      <p class="nav-title">Title of page</p>
+    </a>
+    <a role="button" class="navbar-burger burger is-primary" data-target="navMenu">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
     </a>
   </div>
-  <div class="navbar-menu">
+  <div id="navMenu" class="navbar-menu">
     <div class="navbar-end">
-      <a class="navbar-item">
-        Log In
-      </a>
-      <a class="navbar-item">
-        Sign Up
-      </a>
+      <a class="navbar-item"> Log In </a>
+      <a class="navbar-item"> Sign Up </a>
     </div>
   </div>
-</div>
+</nav>
+<script>
+  var burger = document.querySelector(".burger");
+  var nav = document.querySelector("#" + burger.dataset.target);
+
+  burger.addEventListener("click", function () {
+    burger.classList.toggle("is-active");
+    nav.classList.toggle("is-active");
+  });
+</script>
