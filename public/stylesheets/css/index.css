@@ -7,6 +7,19 @@
   animation-fill-mode: forwards;
 }
 
+.fadeup {
+  transform: translateY(50px);
+  opacity: 0;
+  transition-property: transform, opacity;
+  transition-duration: 1s;
+  transition-timing-function: linear;
+}
+
+.in-view {
+  transform: none;
+  opacity: 1;
+}
+
 #showcase {
   background-image: url("../../images/pexels-snapwire-234507.jpg");
   background-size: cover;
@@ -43,3 +56,4 @@
     opacity: 1;
   }
 }
+
