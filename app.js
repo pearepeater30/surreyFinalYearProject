@@ -4,6 +4,9 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var favicon = require('serve-favicon');
+const mongoose = require('mongoose')
+const session = require('express-session');
+const passport = require('passport');
 
 
 
@@ -11,6 +14,8 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 var app = express();
+
+require('./config/passport')(passport);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -22,6 +27,31 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(favicon(path.join(__dirname, 'public/images/virus.png')));
+
+app.use(express.urlencoded({extended: false}));
+
+// Express session
+app.use(
+  session({
+    secret: 'secret',
+    resave: true,
+    saveUninitialized: true
+  })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Connect to DB
+mongoose
+  .connect(
+    "mongodb+srv://noodleh:uk0cY811ic@cluster0.m6ge9.mongodb.net/fyp?retryWrites=true&w=majority", {useNewUrlParser: true}
+  )
+  .then((result) => {
+    console.log("Connected to DB")
+  }).catch(err => {
+    console.log(err);
+  })
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
