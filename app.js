@@ -48,7 +48,7 @@ app.use(passport.session());
 // Connect to DB
 mongoose
   .connect(
-    process.env.DB_MONGOOSE_URL,
+    DB_MONGO_ENV,
     { useNewUrlParser: true }
   )
   .then((result) => {
