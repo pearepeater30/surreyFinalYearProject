@@ -3,12 +3,17 @@ var router = express.Router();
 const { ensureAuthenticated } = require('../config/auth');
 
 router.get('/', function(req, res, next) {
-  res.redirect('/users/login', {title: 'Login'});
+  res.redirect('dashboard');
 })
 
 /* GET home page. */
-router.get('/dashboard', ensureAuthenticated, function(req, res, next) {
-  res.render('index', { title: 'Dashboard' });
+router.get('/dashboard', function(req, res, next) {
+  res.locals.currentUser = req.user;
+  res.render('index', { title: 'Dashboard'});
 });
+
+router.get('/')
+
+router.get 
 
 module.exports = router;

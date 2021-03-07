@@ -6,7 +6,7 @@
   <body class="body-class">
     <%- include('includes/nav.ejs') %>
     <header id="showcase">
-      <h1 class="title">Welcome to this page</h1>
+      <h1 class="title">Welcome to this page <%= (currentUser != null) ? currentUser.name : '' %> </h1>
       <p>This is a landing page</p>
       <button class="button is-primary is-light">Read More</button>
     </header>
