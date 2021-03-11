@@ -12,6 +12,7 @@ const dotenv = require("dotenv");
 
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
+var businessRouter = require("./routes/businesses")
 
 var app = express();
 
@@ -48,7 +49,7 @@ app.use(passport.session());
 // Connect to DB
 mongoose
   .connect(
-    DB_MONGO_ENV,
+    process.env.DB_MONGO_ENV,
     { useNewUrlParser: true }
   )
   .then((result) => {
@@ -60,6 +61,7 @@ mongoose
 
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
+app.use(businessRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

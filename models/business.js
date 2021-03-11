@@ -10,22 +10,24 @@ const businessSchema = new Schema({
   },
   businessOwner: {
     type: Schema.Types.ObjectId,
-    ref: 'User',
+    ref: "User",
     required: true,
   },
-  businessLocationLong: {
+  address: {
     type: String,
-    required: true
+    required: true,
   },
-  businessLocationLang: {
-    type: String,
-    required: true
+  businessLocation: {
+    type: {
+      type: String, // Don't do `{ location: { type: String } }`
+      enum: ["Point"], // 'location.type' must be 'Point'
+    },
+    coordinates: {
+      type: [Number],
+      index: "2dsphere",
+    },
+    formattedAddress: String,
   },
-  comments: {
-    comment: {
-      commentId: { type: Schema.TypesObjectId, required: true}
-    }
-  }
-})
+});
 
-module.exports = mongoose.model('Business', businessSchema)
+module.exports = mongoose.model("Business", businessSchema);
