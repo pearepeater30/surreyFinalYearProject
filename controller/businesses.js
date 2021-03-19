@@ -18,7 +18,7 @@ exports.getBusinesses = async (req,res,next) => {
 
 exports.postBusinesses = async (req,res,next) => {
   try {
-    const business = await Business.create(req.body);
+    const business = await Business.create({ businessName: req.body.businessName, businessOwner: req.body.businessOwner /**req.user.ObjectId */, address: req.body.address});
     
     return res.status(200).json({
       success: true,

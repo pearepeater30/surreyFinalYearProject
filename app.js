@@ -10,13 +10,13 @@ const passport = require("passport");
 const flash = require("connect-flash");
 const dotenv = require("dotenv");
 
+dotenv.config({ path: "./config/config.env" });
+
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 var businessRouter = require("./routes/businesses")
 
 var app = express();
-
-dotenv.config({ path: "./config/config.env" });
 
 require("./config/passport")(passport);
 

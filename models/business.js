@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { TRUE } = require("node-sass");
+const geocoder = require('../util/geocoder')
 
 const Schema = mongoose.Schema;
 
@@ -9,7 +9,7 @@ const businessSchema = new Schema({
     required: true,
   },
   businessOwner: {
-    type: Schema.Types.ObjectId,
+    type: String, //Schema.Types.ObjectId
     ref: "User",
     required: true,
   },
@@ -28,6 +28,12 @@ const businessSchema = new Schema({
     },
     formattedAddress: String,
   },
+});
+
+//Geocoder & Create Location
+businessSchema.pre('save', async function(next) {
+  const loc = await geocoder.geocode(this.address);
+  console.log(loc);
 });
 
 module.exports = mongoose.model("Business", businessSchema);

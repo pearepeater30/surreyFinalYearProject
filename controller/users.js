@@ -20,7 +20,7 @@ exports.postUser = (req, res, next) => {
   }
 
   if (password.length < 6) {
-    errors.push({ msg: "Passwords shuold be at least 6 characters" });
+    errors.push({ msg: "Passwords should be at least 6 characters" });
   }
 
   if (errors.length > 0) {
