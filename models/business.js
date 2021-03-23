@@ -32,8 +32,15 @@ const businessSchema = new Schema({
 
 //Geocoder & Create Location
 businessSchema.pre('save', async function(next) {
+  //get location from geocoder middleware
   const loc = await geocoder.geocode(this.address);
-  console.log(loc);
+  //set the businesslocation field in the schema
+  this.businessLocation = {
+    type: 'Point',
+    coordinates: [loc[0].longitude, loc[0].latitude],
+    formattedAddress: loc[0].formattedAddress
+  }
+  next();
 });
 
 module.exports = mongoose.model("Business", businessSchema);

@@ -1,5 +1,7 @@
 const Business = require('../models/business')
 
+
+//Route to get the businesses from the databases
 exports.getBusinesses = async (req,res,next) => {
   try {
     const businesses = await Business.find();
@@ -16,6 +18,7 @@ exports.getBusinesses = async (req,res,next) => {
   }
 }
 
+//Route to post new businesses to the database
 exports.postBusinesses = async (req,res,next) => {
   try {
     const business = await Business.create({ businessName: req.body.businessName, businessOwner: req.body.businessOwner /**req.user.ObjectId */, address: req.body.address});
@@ -27,5 +30,19 @@ exports.postBusinesses = async (req,res,next) => {
   }
   catch (err){
     console.log(err);
+  }
+}
+
+//Route to open the map 
+exports.openBusinesses = async (req,res,next) => {
+  try {
+    const businesses = await Business.find();
+
+    res.render('business/overview', { title: 'Overview'})
+    
+  }
+  catch (err){
+    console.error(err);
+    res.status(500).json({ error: 'Server error' });
   }
 }
