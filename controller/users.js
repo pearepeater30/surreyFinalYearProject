@@ -4,11 +4,11 @@ const bcrypt = require("bcryptjs");
 const User = require("../models/user");
 
 exports.getLogin = (req, res, next) => {
-  res.render("auth/login");
+  res.render("auth/login", {title: "Login"});
 };
 
 exports.getRegister = (req, res, next) => {
-  res.render("auth/register");
+  res.render("auth/register", {title: "Register"});
 };
 
 exports.postUser = (req, res, next) => {
