@@ -13,6 +13,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true
   }
+  //might need to add a different user type.
 });
 
 const User = mongoose.model ('User', userSchema)

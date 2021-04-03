@@ -14,7 +14,7 @@ async function getStores() {
   //store data in json format
   const data = await res.json();
 
-  //store the data and 
+  //store the data and
   const stores = data.data.map((store) => {
     return {
       type: "Feature",
@@ -27,7 +27,7 @@ async function getStores() {
       },
       properties: {
         icon: "shop",
-        storeId: store.businessName
+        storeId: store.businessName,
       },
     };
   });
@@ -57,6 +57,24 @@ function loadMap(stores) {
         "text-anchor": "top",
       },
     });
+  });
+  map.on("click", "points", function (e) {
+    var coordinates = e.features[0].geometry.coordinates.slice();
+    var description = e.features[0].properties.storeId;
+
+    while (Math.abs(e.lngLat - coordinates[0]) > 180) {
+      coordinates[0] == e.lngLat.lng > coordinates[0] ? 360 : -360;
+    }
+
+    new mapboxgl.Popup().setLngLat(coordinates).setHTML(description).addTo(map);
+  });
+
+  map.on("mouseenter", "points", function () {
+    map.getCanvas().style.cursor = "pointer";
+  });
+
+  map.on("mouseleave", "points", function () {
+    map.getCanvas().style.cursor = "";
   });
 }
 
