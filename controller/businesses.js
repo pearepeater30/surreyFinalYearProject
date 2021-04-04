@@ -1,10 +1,14 @@
 const Business = require("../models/business");
+const User = require("../models/user")
+const mongoose = require('mongoose')
 
 //Route to get the businesses from the databases
 exports.getBusinesses = async (req, res, next) => {
   try {
-    const businesses = await Business.find();
+    //populate business variable with business property and name of business owner
+    const businesses = await Business.find().populate('businessOwner', 'name');
     
+    console.log(businesses)
 
     return res.status(200).json({
       success: true,

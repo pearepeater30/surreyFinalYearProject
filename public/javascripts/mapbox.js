@@ -28,6 +28,7 @@ async function getStores() {
       properties: {
         icon: "shop",
         storeId: store.businessName,
+        storeOwner: store.businessOwner.name
       },
     };
   });
@@ -58,21 +59,26 @@ function loadMap(stores) {
       },
     });
   });
+
+  //function to make the points on the map clickable
   map.on("click", "points", function (e) {
     var coordinates = e.features[0].geometry.coordinates.slice();
     var description = e.features[0].properties.storeId;
+    var owner = e.features[0].properties.storeOwner
 
     while (Math.abs(e.lngLat - coordinates[0]) > 180) {
       coordinates[0] == e.lngLat.lng > coordinates[0] ? 360 : -360;
     }
 
-    new mapboxgl.Popup().setLngLat(coordinates).setHTML(description).addTo(map);
+    new mapboxgl.Popup().setLngLat(coordinates).setHTML('<h1>' + description + '</h1>' + '<p> Business Owner: ' + owner + '</p>').addTo(map);
   });
 
+  //function to turn the cursor into a pointer when hovering over a point.
   map.on("mouseenter", "points", function () {
     map.getCanvas().style.cursor = "pointer";
   });
 
+  //function to remove the pointer when moving away from a point.
   map.on("mouseleave", "points", function () {
     map.getCanvas().style.cursor = "";
   });
