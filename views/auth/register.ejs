@@ -56,6 +56,12 @@
                     value="<%= typeof password2 != 'undefined' ? password2 : '' %>"
                   />
                 </div>
+                <div class="field">
+                  <input type="radio" id="businessOwner" name="usertype" value="True">
+                  <label for="usertype">Business Owner</label><br>
+                  <input type="radio" id="customer" name="usertype" value="False">
+                  <label for="usertype">Customer</label><br>
+                </div>
                 <div class="field is-grouped">
                   <p class="control">
                     <button type="submit" class="button is-info">

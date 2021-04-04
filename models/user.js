@@ -12,8 +12,15 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true
+  },
+  /** TODO might need to add a different user type. 
+   *  True is a Business Owner,
+   *  False is a Customer
+  */
+  usertype: {
+    type: Boolean,
+    required: true
   }
-  //TODO might need to add a different user type.
 });
 
 const User = mongoose.model ('User', userSchema)
