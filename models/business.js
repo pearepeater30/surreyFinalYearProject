@@ -9,7 +9,7 @@ const businessSchema = new Schema({
     required: true,
   },
   businessOwner: {
-    type: String, //Schema.Types.ObjectId
+    type: Schema.Types.ObjectId,
     ref: "User",
     required: true,
   },

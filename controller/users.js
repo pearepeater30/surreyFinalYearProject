@@ -13,6 +13,9 @@ exports.getRegister = (req, res, next) => {
 
 exports.postUser = (req, res, next) => {
   const { name, email, password, password2 } = req.body;
+  //usertype stored as a variable, to modify to boolean
+  var usertype = req.body.usertype;
+  console.log(usertype)
   let errors = [];
 
   if (!name || !email || !password || !password2) {
@@ -22,7 +25,13 @@ exports.postUser = (req, res, next) => {
   if (password.length < 6) {
     errors.push({ msg: "Passwords should be at least 6 characters" });
   }
-
+  //modify usertype to boolean values instead of string
+  if (usertype === "True"){
+    usertype = true;
+  }
+  else if (usertype === "False"){
+    usertype = false;
+  }
   if (errors.length > 0) {
     res.render("auth/register", {
       errors,
@@ -30,12 +39,14 @@ exports.postUser = (req, res, next) => {
       email,
       password,
       password2,
+      usertype
     });
   } else {
     const newUser = new User({
       name,
       email,
       password,
+      usertype
     });
 
     bcrypt.genSalt(10, (err, salt) => {

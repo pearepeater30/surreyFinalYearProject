@@ -12,8 +12,14 @@
   </div>
   <div id="navMenu" class="navbar-menu">
     <div class="navbar-end">
-      <a href="/users/login" class="navbar-item"> Log In </a>
-      <a href="/users/register" class="navbar-item"> Sign Up </a>
+      <!-- Check if the user is logged in -->
+      <% if (currentUser == null) { %> 
+        <a href="/users/login" class="navbar-item"> Log In </a>
+        <a href="/users/register" class="navbar-item"> Sign Up </a>
+      <%} else { %> 
+        <a href="/users/logout" class="navbar-item"> Log Out </a>
+        <a href="/createbusiness" class="navbar-item"> Create Business </a>
+      <% }  %> 
     </div>
   </div>
 </nav>
