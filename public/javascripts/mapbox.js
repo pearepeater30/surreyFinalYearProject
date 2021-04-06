@@ -27,7 +27,8 @@ async function getStores() {
       },
       properties: {
         icon: "shop",
-        storeId: store.businessName,
+        storeId: store._id,
+        storeName: store.businessName,
         storeOwner: store.businessOwner.name
       },
     };
@@ -52,7 +53,7 @@ function loadMap(stores) {
       layout: {
         "icon-image": "{icon}-15",
         "icon-size": 1.5,
-        "text-field": "{storeId}",
+        "text-field": "{storeName}",
         "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
         "text-offset": [0, 0.9],
         "text-anchor": "top",
@@ -63,14 +64,15 @@ function loadMap(stores) {
   //function to make the points on the map clickable
   map.on("click", "points", function (e) {
     var coordinates = e.features[0].geometry.coordinates.slice();
-    var description = e.features[0].properties.storeId;
-    var owner = e.features[0].properties.storeOwner
+    const description = e.features[0].properties.storeName;
+    const owner = e.features[0].properties.storeOwner;
+    const storeId = e.features[0].properties.storeId;
 
     while (Math.abs(e.lngLat - coordinates[0]) > 180) {
       coordinates[0] == e.lngLat.lng > coordinates[0] ? 360 : -360;
     }
 
-    new mapboxgl.Popup().setLngLat(coordinates).setHTML('<h1>' + description + '</h1>' + '<p> Business Owner: ' + owner + '</p>').addTo(map);
+    new mapboxgl.Popup().setLngLat(coordinates).setHTML('<h1>' + description + '</h1>' + '<p> Business Owner: ' + owner + '</p>' + "<a href=/business/" + storeId + "> Store Link </a>").addTo(map);
   });
 
   //function to turn the cursor into a pointer when hovering over a point.

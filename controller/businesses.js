@@ -51,3 +51,16 @@ exports.openBusinesses = async (req, res, next) => {
     res.status(500).json({ error: "Server error" });
   }
 };
+
+//Route to display information about individual businesses
+exports.getBusiness = (req,res,next) => {
+  const businessId = req.params.businessId;
+  Business.findById(businessId)
+    .then(business => {
+      res.render('business/business-detail', {
+        business: business,
+        pageTitle: business.title
+      })
+    })
+    .catch(err => console.log(err));
+}
