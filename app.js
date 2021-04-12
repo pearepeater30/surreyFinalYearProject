@@ -9,6 +9,9 @@ const session = require("express-session");
 const passport = require("passport");
 const flash = require("connect-flash");
 const dotenv = require("dotenv");
+const mqtt = require("mqtt");
+const encode = require("nodejs-base64-encode");
+const Reading = require('./models/reading');
 
 dotenv.config({ path: "./config/config.env" });
 
@@ -78,5 +81,30 @@ app.use(function (err, req, res, next) {
   res.status(err.status || 500);
   res.render("error");
 });
+
+const client = mqtt.connect({
+  host: "us-west.thethings.network",
+  port: 1883,
+  username: "noodlehapplication",
+  password: "ttn-account-v2.YE4IJ8FOCgavdK8NM35bvROGeB43yXLllZTap8ZiqNw",
+});
+
+client.on("connect", function () {
+  console.log("connected");
+  client.subscribe("noodlehapplication/devices/first-lorawan-node/up");
+  client.on("message", function (topic, message) {
+    const obj = JSON.parse(message);
+    const co2Reading = encode.decode(obj.payload_raw, "base64")
+    console.log(co2Reading);
+    const newReading = new Reading({co2Reading})
+    newReading.save()
+    .then((reading) => {
+      console.log('New Reading: ' + reading.co2Reading);
+    })
+    .catch((err) => console.log(err));
+    
+  });
+});
+
 
 module.exports = app;
