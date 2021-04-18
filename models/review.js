@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 const reviewSchema = new Schema({
   rating: {
     type: Number,
-    required: true,
+    required: false,
   },
   comment: {
     type: String,
@@ -22,3 +22,7 @@ const reviewSchema = new Schema({
     required: true,
   },
 });
+
+const Review = mongoose.model('Review', reviewSchema);
+
+module.exports = Review;
