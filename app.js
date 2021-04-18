@@ -11,13 +11,14 @@ const flash = require("connect-flash");
 const dotenv = require("dotenv");
 const mqtt = require("mqtt");
 const encode = require("nodejs-base64-encode");
-const Reading = require('./models/reading');
+const Reading = require("./models/reading");
 
 dotenv.config({ path: "./config/config.env" });
 
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
-var businessRouter = require("./routes/businesses")
+var businessRouter = require("./routes/businesses");
+var reviewRouter = require("./routes/reviews");
 
 var app = express();
 
@@ -51,10 +52,7 @@ app.use(passport.session());
 
 // Connect to DB
 mongoose
-  .connect(
-    process.env.DB_MONGO_ENV,
-    { useNewUrlParser: true }
-  )
+  .connect(process.env.DB_MONGO_ENV, { useNewUrlParser: true })
   .then((result) => {
     console.log("Connected to DB");
   })
@@ -62,9 +60,11 @@ mongoose
     console.log(err);
   });
 
+//Routes
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use(businessRouter);
+app.use("/reviews", reviewRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -82,6 +82,7 @@ app.use(function (err, req, res, next) {
   res.render("error");
 });
 
+//Connect to mqtt client
 const client = mqtt.connect({
   host: "us-west.thethings.network",
   port: 1883,
@@ -89,22 +90,22 @@ const client = mqtt.connect({
   password: "ttn-account-v2.YE4IJ8FOCgavdK8NM35bvROGeB43yXLllZTap8ZiqNw",
 });
 
+//this function receives and creates entries for CO2 Readings
 client.on("connect", function () {
   console.log("connected");
   client.subscribe("noodlehapplication/devices/first-lorawan-node/up");
   client.on("message", function (topic, message) {
     const obj = JSON.parse(message);
-    const co2Reading = encode.decode(obj.payload_raw, "base64")
+    const co2Reading = encode.decode(obj.payload_raw, "base64");
     console.log(co2Reading);
-    const newReading = new Reading({co2Reading})
-    newReading.save()
-    .then((reading) => {
-      console.log('New Reading: ' + reading.co2Reading);
-    })
-    .catch((err) => console.log(err));
-    
+    const newReading = new Reading({ co2Reading });
+    newReading
+      .save()
+      .then((reading) => {
+        console.log("New Reading: " + reading.co2Reading);
+      })
+      .catch((err) => console.log(err));
   });
 });
-
 
 module.exports = app;

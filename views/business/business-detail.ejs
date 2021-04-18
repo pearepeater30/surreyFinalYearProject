@@ -1,2 +1,3 @@
 <h1><%= business.businessName %> </h1>
-<p><%= business.address %> </p>
+<p><%= business.address %> </p> 
+<%- include('../review/createReview', {businessId: business._id})  %> 

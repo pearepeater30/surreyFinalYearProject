@@ -67,7 +67,10 @@ function loadMap(stores) {
     const description = e.features[0].properties.storeName;
     const owner = e.features[0].properties.storeOwner;
     const storeId = e.features[0].properties.storeId;
-
+    
+    // Ensure that if the map is zoomed out such that multiple
+    // copies of the feature are visible, the popup appears
+    // over the copy being pointed to.
     while (Math.abs(e.lngLat - coordinates[0]) > 180) {
       coordinates[0] == e.lngLat.lng > coordinates[0] ? 360 : -360;
     }
