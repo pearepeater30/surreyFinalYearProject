@@ -4,18 +4,18 @@ const bcrypt = require("bcryptjs");
 const User = require("../models/user");
 
 exports.getLogin = (req, res, next) => {
-  res.render("auth/login", {title: "Login"});
+  res.render("auth/login", { title: "Login" });
 };
 
 exports.getRegister = (req, res, next) => {
-  res.render("auth/register", {title: "Register"});
+  res.render("auth/register", { title: "Register" });
 };
 
 exports.postUser = (req, res, next) => {
   const { name, email, password, password2 } = req.body;
   //usertype stored as a variable, to modify to boolean
   var usertype = req.body.usertype;
-  console.log(usertype)
+  console.log(usertype);
   let errors = [];
 
   if (!name || !email || !password || !password2) {
@@ -26,10 +26,9 @@ exports.postUser = (req, res, next) => {
     errors.push({ msg: "Passwords should be at least 6 characters" });
   }
   //modify usertype to boolean values instead of string
-  if (usertype === "True"){
+  if (usertype === "True") {
     usertype = true;
-  }
-  else if (usertype === "False"){
+  } else if (usertype === "False") {
     usertype = false;
   }
   if (errors.length > 0) {
@@ -39,14 +38,14 @@ exports.postUser = (req, res, next) => {
       email,
       password,
       password2,
-      usertype
+      usertype,
     });
   } else {
     const newUser = new User({
       name,
       email,
       password,
-      usertype
+      usertype,
     });
 
     bcrypt.genSalt(10, (err, salt) => {
@@ -57,12 +56,20 @@ exports.postUser = (req, res, next) => {
           .save()
           .then((user) => {
             console.log("Success");
-            res.redirect("/users/login");
+            req.login(user, function (err) {
+              if ( !err ){
+                res.redirect('/')
+              }
+              else{
+                console.log(err)
+              }
+            })
           })
           .catch((err) => console.log(err));
       });
     });
   }
+  console.log(req.flash());
 };
 
 exports.postLogin = (req, res, next) => {

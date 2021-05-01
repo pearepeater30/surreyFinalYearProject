@@ -1,22 +1,22 @@
-const {body, validationResult} = require('express-validator');
+const { body, validationResult } = require("express-validator");
 
 //implement middlware to validate data for registering a method
 exports.validateUser = [
-  body('email')
+  body("email")
     .trim()
     .normalizeEmail()
     .not()
     .isEmpty()
-    .withMessage('Invalid email address!')
+    .withMessage("Invalid email address!")
     .bail(),
-  body('password')
-    .trim()
-    .notEmpty()
-    .withMessage("You must Supply A Password"),
+  body("password").trim().notEmpty().withMessage("You must Supply A Password"),
   (req, res, next) => {
     const errors = validationResult(req);
-    if (!errors.isEmpty())
-      return res.status(422).json({errors: errors.array()});
+    if (!errors.isEmpty()) {
+      req.flash("errorMessage", "Something is wrong");
+    } else {
+      req.flash("successMessage", "You are successfully using req-flash");
+    }
     next();
   },
 ];

@@ -11,6 +11,7 @@ const flash = require("connect-flash");
 const dotenv = require("dotenv");
 const mqtt = require("mqtt");
 const encode = require("nodejs-base64-encode");
+const reqFlash = require('req-flash');
 const Reading = require("./models/reading");
 
 dotenv.config({ path: "./config/config.env" });
@@ -36,6 +37,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(favicon(path.join(__dirname, "public/images/virus.png")));
 app.use(flash());
 
+
 app.use(express.urlencoded({ extended: false }));
 
 // Express session
@@ -46,7 +48,7 @@ app.use(
     saveUninitialized: true,
   })
 );
-
+app.use(reqFlash());
 app.use(passport.initialize());
 app.use(passport.session());
 
