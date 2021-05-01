@@ -19,6 +19,10 @@ exports.postUser = (req, res, next) => {
   let errors = [];
 
   if (!name || !email || !password || !password2) {
+    errors.push({ msg: "Please enter all fields" });
+  }
+
+  if (password != password2) {
     errors.push({ msg: "Passwords don't match" });
   }
 
@@ -39,37 +43,51 @@ exports.postUser = (req, res, next) => {
       password,
       password2,
       usertype,
+      title: "Register",
     });
   } else {
-    const newUser = new User({
-      name,
-      email,
-      password,
-      usertype,
-    });
-
-    bcrypt.genSalt(10, (err, salt) => {
-      bcrypt.hash(newUser.password, salt, (err, hash) => {
-        if (err) throw err;
-        newUser.password = hash;
-        newUser
-          .save()
-          .then((user) => {
-            console.log("Success");
-            req.login(user, function (err) {
-              if ( !err ){
-                res.redirect('/')
-              }
-              else{
-                console.log(err)
-              }
-            })
-          })
-          .catch((err) => console.log(err));
-      });
+    User.findOne({ email: email }).then((user) => {
+      if (user) {
+        errors.push({ msg: "Email already exists" });
+        res.render("register", {
+          errors,
+          name,
+          email,
+          password,
+          password2,
+          usertype,
+          title: "Register",
+        });
+      } else {
+        const newUser = new User({
+          name,
+          email,
+          password,
+          usertype,
+        });
+        bcrypt.genSalt(10, (err, salt) => {
+          bcrypt.hash(newUser.password, salt, (err, hash) => {
+            if (err) throw err;
+            newUser.password = hash;
+            newUser
+              .save()
+              .then((user) => {
+                console.log("Success");
+                req.login(user, function (err) {
+                  if (!err) {
+                    res.redirect("/");
+                  } else {
+                    res.redirect("/users/register");
+                    console.log(req.flash());
+                  }
+                });
+              })
+              .catch((err) => console.log(err));
+          });
+        });
+      }
     });
   }
-  console.log(req.flash());
 };
 
 exports.postLogin = (req, res, next) => {
