@@ -6,13 +6,14 @@ const bcrypt = require("bcryptjs");
 const User = require("../models/user");
 const { forwardAuthenticated } = require("../config/auth");
 const userController = require("../controller/users");
+const {validateUser} = require("../middlewares/validators/userValidator")
 
 /* GET users listing. */
 router.get("/login", forwardAuthenticated, userController.getLogin);
 
 router.get("/register", forwardAuthenticated, userController.getRegister);
 
-router.post("/register", userController.postUser);
+router.post("/register", validateUser, userController.postUser);
 
 router.post("/login", userController.postLogin);
 

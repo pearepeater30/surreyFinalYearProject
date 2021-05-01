@@ -14,7 +14,6 @@ module.exports = function (passport) {
             return done(null, false, {
               message: "That email is not registered",
             });
-            console.log();
           }
 
           // Match Password
