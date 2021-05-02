@@ -55,11 +55,11 @@ exports.getBusiness = async (req,res,next) => {
   const businessId = req.params.businessId;
   try{
     const business = await Business.findById(businessId)
-    const review = await Review.find({ business: (businessId)})
+    const reviews = await Review.find({ business: (businessId)})
     res.render('business/business-detail', {
       business: business,
-      pageTitle: business.title,
-      reviews: review
+      title: business.title,
+      reviews: reviews
     })
   }
   catch (err) {

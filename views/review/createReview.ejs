@@ -1,7 +1,16 @@
-<form action="/reviews/postReview" method="post">
-  <textarea name="comment" rows="10" cols="30">
+<div class="box">
+  <form action="/reviews/postReview" method="post">
+
+    <div class="field">
+      <label class="label">Comment</label>
+      <div class="control">
+        <textarea class="textarea is-primary" placeholder="Comment"></textarea>
+      </div>
+    </div>
+      
     
-  </textarea>
-  <button class="btn" type="submit">Submit Review</button>
-  <input type="hidden" name="businessId" value="<%= business._id %>">
-</form>
+    <button class="button is-primary" type="submit">Submit Review</button>
+    <input type="hidden" name="businessId" value="<%= business._id %>">
+  </form>
+</div>
+
