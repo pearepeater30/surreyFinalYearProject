@@ -21,6 +21,14 @@ const reviewSchema = new Schema({
     ref: "User",
     required: true,
   },
+  reviewCreatorName: {
+    type: String,
+    required: true,
+  },
+  creationTimeStamp: {
+    type: Date,
+    required: true,
+  }
 });
 
 const Review = mongoose.model('Review', reviewSchema);

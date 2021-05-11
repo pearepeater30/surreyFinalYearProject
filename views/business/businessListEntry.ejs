@@ -1,0 +1,12 @@
+<article class="message is-dark">
+  <div class="message-header">
+    <p><%= business.businessName %></p>
+    <button class="delete" aria-label="delete"></button>
+  </div>
+  <div class="message-body">
+    <%= business.businessOwner %> 
+  </div>
+  <div>
+    <a href="/editbusiness/<%= business._id %>">Edit Business</a>
+  </div>
+</article>

@@ -1,23 +1,25 @@
 const Review = require("../models/review");
-const mongoose = require("mongoose");
-const { ObjectID } = require("bson");
+const User = require("../models/user")
 
 exports.createReview = (req, res, next) => {
-  res.render("review/createReview", { title: "Write Review" });
+  res.render("review/createReview", { title: "Reviews" });
 };
 
 exports.postReview = async (req, res, next) => {
+  const userid = req.user._id;
+  const user = await User.findById(userid);
   const review = await Review({
     rating: req.body.rating,
     comment: req.body.comment,
     business: req.body.businessId,
-    reviewCreator: req.user._id,
+    reviewCreator: userid,
+    reviewCreatorName: user.name
   });
   review
     .save()
     .then((result) => {
-      res.redirect("/businesses")
-      console.log("Created Product");
+      res.redirect("/business/" + req.body.businessId)
+      console.log("Created Review");
     })
     .catch((err) => {
       console.log(err);
