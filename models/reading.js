@@ -7,11 +7,10 @@ const readingSchema = new Schema({
     type: Number,
     required: true
   },
-  // business: {
-  //   type: Schema.Types.ObjectId,
-  //   ref: "Business",
-  //   required: true,
-  // }
+  deviceNode: {
+    type: String,
+    required: true,
+  }
 })
 
 const Reading = mongoose.model('Reading', readingSchema);

@@ -98,13 +98,15 @@ client.on("connect", function () {
   client.subscribe("noodlehapplication/devices/first-lorawan-node/up");
   client.on("message", function (topic, message) {
     const obj = JSON.parse(message);
+    console.log(obj);
     const co2Reading = encode.decode(obj.payload_raw, "base64");
-    console.log(co2Reading);
-    const newReading = new Reading({ co2Reading });
+    const deviceNode = obj.hardware_serial;
+    const newReading = new Reading({ co2Reading, deviceNode });
     newReading
       .save()
       .then((reading) => {
         console.log("New Reading: " + reading.co2Reading);
+        console.log("From Device: " + reading.deviceNode);
       })
       .catch((err) => console.log(err));
   });

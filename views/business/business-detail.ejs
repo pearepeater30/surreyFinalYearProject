@@ -3,6 +3,7 @@
   <div class="hero-body">
     <p class="title"><%= business.businessName %></p>
     <p class="subtitle"><%= business.address %></p>
+    <p class="subtitle">CO2 Average: <%= readingsAverage %></p>
   </div>
 </div>
 <%- include('../review/createReview', {businessId: business._id}) %> <%
