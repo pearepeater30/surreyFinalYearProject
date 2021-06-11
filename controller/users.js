@@ -49,7 +49,7 @@ exports.postUser = (req, res, next) => {
     User.findOne({ email: email }).then((user) => {
       if (user) {
         errors.push({ msg: "Email already exists" });
-        res.render("register", {
+        res.render("auth/register", {
           errors,
           name,
           email,

@@ -23,14 +23,27 @@ exports.getBusinesses = async (req, res, next) => {
 
 //Route to post new businesses to the database
 exports.postBusinesses = async (req, res, next) => {
+  let errors = [];
+  let {businessName, _id, address} = req.body
   try {
-    const business = await Business.create({
-      businessName: req.body.businessName,
-      businessOwner: req.user._id,
-      address: req.body.address,
-    });
-    console.log("Created Business");
-    res.redirect("/businesses");
+    if (req.user.usertype = false){
+      errors.push({msg: "Error, your user type does not allow you to create a business"})
+    }
+    else if(!businessName || !_id || !address ) {
+      errors.push({msg: "One or more entries are not filled in properly"})
+    }
+    if (errors.length > 0){
+      res.render('index', {title: "Home", errors: errors, currentUser: req.user})
+    }
+    else{
+      const business = await Business.create({
+        businessName: businessName,
+        businessOwner: _id,
+        address: address,
+      });
+      console.log("Created Business");
+      res.redirect("/businesses");
+    }
   } catch (err) {
     console.log(err);
   }
@@ -38,6 +51,10 @@ exports.postBusinesses = async (req, res, next) => {
 
 exports.createBusinesses = (req, res, next) => {
   res.locals.currentUser = req.user;
+  if (req.user.usertype == false){
+    res.status(401).json({ error: "Unauthorized Action"})
+    res.redirect("/")
+  }
   res.render("business/addBusiness", { title: "Add Business" });
 };
 
@@ -54,6 +71,7 @@ exports.openBusinesses = async (req, res, next) => {
 
 //Route to display information about individual businesses
 exports.getBusiness = async (req, res, next) => {
+  res.locals.currentUser = req.user;
   const businessId = req.params.businessId;
   try {
     const business = await Business.findById(businessId);
@@ -78,6 +96,10 @@ exports.getBusiness = async (req, res, next) => {
 };
 
 exports.showEditBusiness = async (req, res, next) => {
+  if (req.user.usertype == false){
+    res.status(401).json({ error: "Unauthorized Action"})
+    res.redirect("/")
+  }
   res.locals.currentUser = req.user;
   const businessId = req.params.businessId;
   try {
@@ -94,6 +116,11 @@ exports.showEditBusiness = async (req, res, next) => {
 
 exports.postEditBusiness = async (req, res, next) => {
   try {
+    if (req.user.usertype == false){
+      res.status(401).json({ error: "Unauthorized Action"})
+      res.redirect("/")
+    }
+    res.locals.currentUser = req.user
     const businessId = req.params.businessId;
     const business = Business.findById(businessId);
     console.log(req.body.address);
