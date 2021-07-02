@@ -1,0 +1,8 @@
+<%- include("../includes/nav")  %> 
+
+
+<% businesses.forEach(business => { %> <%- include('../business/businessListEntry',
+
+{business: business}) %>
+
+<% }) %> 

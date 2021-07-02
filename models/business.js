@@ -28,6 +28,10 @@ const businessSchema = new Schema({
     },
     formattedAddress: String,
   },
+  deviceNode: {
+    type: String,
+    required: false,
+  }
 });
 
 //Geocoder & Create Location

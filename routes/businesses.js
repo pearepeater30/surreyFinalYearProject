@@ -7,6 +7,9 @@ const {
   openBusinesses,
   createBusinesses,
   getBusiness,
+  showEditBusiness,
+  postEditBusiness,
+  getBusinessesList,
 } = require("../controller/businesses");
 
 router.get("/businesses", ensureAuthenticated, openBusinesses);
@@ -18,5 +21,11 @@ router.get("/createbusiness", ensureAuthenticated, createBusinesses);
 router.post("/businesses", ensureAuthenticated, postBusinesses);
 
 router.get("/business/:businessId", ensureAuthenticated, getBusiness);
+
+router.get("/yourbusinesses", ensureAuthenticated, getBusinessesList);
+
+router.get("/editbusiness/:businessId", ensureAuthenticated, showEditBusiness);
+
+router.post("/editbusiness/:businessId", ensureAuthenticated, postEditBusiness);
 
 module.exports = router;

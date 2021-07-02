@@ -11,6 +11,7 @@ const flash = require("connect-flash");
 const dotenv = require("dotenv");
 const mqtt = require("mqtt");
 const encode = require("nodejs-base64-encode");
+const reqFlash = require('req-flash');
 const Reading = require("./models/reading");
 
 dotenv.config({ path: "./config/config.env" });
@@ -36,6 +37,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(favicon(path.join(__dirname, "public/images/virus.png")));
 app.use(flash());
 
+
 app.use(express.urlencoded({ extended: false }));
 
 // Express session
@@ -46,7 +48,7 @@ app.use(
     saveUninitialized: true,
   })
 );
-
+app.use(reqFlash());
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -96,13 +98,15 @@ client.on("connect", function () {
   client.subscribe("noodlehapplication/devices/first-lorawan-node/up");
   client.on("message", function (topic, message) {
     const obj = JSON.parse(message);
+    console.log(obj);
     const co2Reading = encode.decode(obj.payload_raw, "base64");
-    console.log(co2Reading);
-    const newReading = new Reading({ co2Reading });
+    const deviceNode = obj.hardware_serial;
+    const newReading = new Reading({ co2Reading, deviceNode });
     newReading
       .save()
       .then((reading) => {
         console.log("New Reading: " + reading.co2Reading);
+        console.log("From Device: " + reading.deviceNode);
       })
       .catch((err) => console.log(err));
   });

@@ -1,0 +1,54 @@
+<%- include("../includes/head") %>
+<div class="hero is-primary">
+  <div class="hero-body">
+    <p class="title"><%= business.businessName %></p>
+    <p class="subtitle"><%= business.address %></p>
+  </div>
+  <form action="/editbusiness/<%= business._id %>" method="POST">
+    <div class="field">
+      <label for="businessName">Business Name</label>
+      <input 
+        type="businessName"
+        id="bussinessName"
+        name="businessName"
+        class="form-control"
+        placeholder="Enter Name Of Business"
+        value="<%= business.businessName %>"
+       />
+    </div>
+    <div class="field">
+      <label for="address">Address</label>
+      <input 
+        type="address"
+        id="address"
+        name="address"
+        class="form-control"
+        placeholder="Enter Address Of Business"
+        value="<%= business.address %>"
+       />
+    </div>
+    <div class="field">
+      <label for="devideNode">Device Address</label>
+      <input 
+        type="deviceNode"
+        id="deviceNode"
+        name="deviceNode"
+        class="form-control"
+        placeholder="Enter Device Address"
+        value="<%= business.deviceNode %>"
+       />
+    </div>
+    <div class="field is-grouped">
+      <p class="control">
+        <button type="submit" id="deviceNode" class="button is-info" value="<%= business._id %> ">
+          Create Business
+        </button>
+      </p>
+      <p class="control">
+        <a class="button is-info" href="/businesses">
+          Back
+        </a>
+      </p>
+    </div>
+  </form>
+</div>
