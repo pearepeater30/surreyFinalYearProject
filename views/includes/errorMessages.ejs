@@ -1,12 +1,6 @@
 <% if(locals.errors){ %> <% errors.forEach(function(error) { %>
-  <article class="message">
-    <div class="message-header">
-      <p>Error</p>
-      <button class="delete" aria-label="delete"></button>
-    </div>
-    <div class="message-body">
-      <%= error.msg %>
-    </div>
-  </article>
-<% }); %>
-<% } %> 
+<div class="box">
+  <p>Error</p>
+  <%= error.msg %>
+</div>
+<% }); %> <% } %>

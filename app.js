@@ -16,11 +16,6 @@ const Reading = require("./models/reading");
 
 dotenv.config({ path: "./config/config.env" });
 
-var indexRouter = require("./routes/index");
-var usersRouter = require("./routes/users");
-var businessRouter = require("./routes/businesses");
-var reviewRouter = require("./routes/reviews");
-
 var app = express();
 
 require("./config/passport")(passport);
@@ -40,6 +35,11 @@ app.use(flash());
 
 app.use(express.urlencoded({ extended: false }));
 
+var indexRouter = require("./routes/index");
+var usersRouter = require("./routes/users");
+var businessRouter = require("./routes/businesses")(io);
+var reviewRouter = require("./routes/reviews");
+
 // Express session
 app.use(
   session({
@@ -53,8 +53,9 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Connect to DB
+//process.env.DB_MONGO_ENV
 mongoose
-  .connect(process.env.DB_MONGO_ENV, { useNewUrlParser: true })
+  .connect('mongodb+srv://noodleh:uk0cY811ic@cluster0.m6ge9.mongodb.net/fyp?retryWrites=true&w=majority', { useNewUrlParser: true })
   .then((result) => {
     console.log("Connected to DB");
   })
@@ -95,6 +96,8 @@ const client = mqtt.connect({
 //this function receives and creates entries for CO2 Readings
 client.on("connect", function () {
   console.log("connected");
+  // this client subscribe has a wildcard in order to 
+  // client.subscribe("noodlehapplication/devices/+/up");
   client.subscribe("noodlehapplication/devices/first-lorawan-node/up");
   client.on("message", function (topic, message) {
     const obj = JSON.parse(message);

@@ -3,6 +3,7 @@ const Review = require("../models/review");
 const Reading = require("../models/reading");
 const mongoose = require("mongoose");
 const geocoder = require("../util/geocoder");
+const io = require("socket.io");
 
 //Route to get the businesses from the databases
 exports.getBusinesses = async (req, res, next) => {
@@ -24,18 +25,22 @@ exports.getBusinesses = async (req, res, next) => {
 //Route to post new businesses to the database
 exports.postBusinesses = async (req, res, next) => {
   let errors = [];
-  let {businessName, _id, address} = req.body
+  let { businessName, _id, address } = req.body;
   try {
-    if (req.user.usertype = false){
-      errors.push({msg: "Error, your user type does not allow you to create a business"})
+    if ((req.user.usertype = false)) {
+      errors.push({
+        msg: "Error, your user type does not allow you to create a business",
+      });
+    } else if (!businessName || !_id || !address) {
+      errors.push({ msg: "One or more entries are not filled in properly" });
     }
-    else if(!businessName || !_id || !address ) {
-      errors.push({msg: "One or more entries are not filled in properly"})
-    }
-    if (errors.length > 0){
-      res.render('index', {title: "Home", errors: errors, currentUser: req.user})
-    }
-    else{
+    if (errors.length > 0) {
+      res.render("index", {
+        title: "Home",
+        errors: errors,
+        currentUser: req.user,
+      });
+    } else {
       const business = await Business.create({
         businessName: businessName,
         businessOwner: _id,
@@ -51,9 +56,9 @@ exports.postBusinesses = async (req, res, next) => {
 
 exports.createBusinesses = (req, res, next) => {
   res.locals.currentUser = req.user;
-  if (req.user.usertype == false){
-    res.status(401).json({ error: "Unauthorized Action"})
-    res.redirect("/")
+  if (req.user.usertype == false) {
+    res.status(401).json({ error: "Unauthorized Action" });
+    res.redirect("/");
   }
   res.render("business/addBusiness", { title: "Add Business" });
 };
@@ -76,29 +81,32 @@ exports.getBusiness = async (req, res, next) => {
   try {
     const business = await Business.findById(businessId);
     const reviews = await Review.find({ business: businessId });
-    const co2FromDBReadings = await Reading.find({deviceNode: business.deviceNode});
-    const co2Readings = []
-    co2FromDBReadings.forEach(reading => {
+    const co2FromDBReadings = await Reading.find({
+      deviceNode: business.deviceNode,
+    });
+    const co2Readings = [];
+    co2FromDBReadings.forEach((reading) => {
       co2Readings.push(reading.co2Reading);
-    })
+    });
     const readingslength = co2Readings.length;
     const average = findingAverage(co2Readings, readingslength);
     res.render("business/business-detail", {
       business: business,
       title: business.title,
       reviews: reviews,
-      readingsAverage: parseFloat(average).toFixed(2)
+      readingsAverage: parseFloat(average).toFixed(2),
     });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Server error" });
   }
+  Reading.watch().on('change', change=> console.log(JSON.stringify(change)))
 };
 
 exports.showEditBusiness = async (req, res, next) => {
-  if (req.user.usertype == false){
-    res.status(401).json({ error: "Unauthorized Action"})
-    res.redirect("/")
+  if (req.user.usertype == false) {
+    res.status(401).json({ error: "Unauthorized Action" });
+    res.redirect("/");
   }
   res.locals.currentUser = req.user;
   const businessId = req.params.businessId;
@@ -116,11 +124,11 @@ exports.showEditBusiness = async (req, res, next) => {
 
 exports.postEditBusiness = async (req, res, next) => {
   try {
-    if (req.user.usertype == false){
-      res.status(401).json({ error: "Unauthorized Action"})
-      res.redirect("/")
+    if (req.user.usertype == false) {
+      res.status(401).json({ error: "Unauthorized Action" });
+      res.redirect("/");
     }
-    res.locals.currentUser = req.user
+    res.locals.currentUser = req.user;
     const businessId = req.params.businessId;
     const business = Business.findById(businessId);
     console.log(req.body.address);
@@ -160,12 +168,34 @@ exports.getBusinessesList = async (req, res, next) => {
   }
 };
 
+exports.getCO2Reading = async (req, res, next) => {
+  try {
+    const business = await Business.findById(req.params.businessId);
+    const co2FromDBReadings = await Reading.find({
+      deviceNode: business.deviceNode,
+    });
+    const co2Readings = [];
+    co2FromDBReadings.forEach((reading) => {
+      co2Readings.push(reading.co2Reading);
+    });
+    const readingslength = co2Readings.length;
+    const average = findingAverage(co2Readings, readingslength);
+    return res.status(200).json({
+      average: average,
+    });
+  } 
+  catch {
+    console.error(err);
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
 const findingAverage = (array) => {
   this.array = array;
   var sum = 0;
-  this.array.forEach(element => {
+  this.array.forEach((element) => {
     sum += element;
   });
-  const total = sum/this.array.length;
+  const total = sum / this.array.length;
   return total;
-}
+};

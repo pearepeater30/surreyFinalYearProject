@@ -23,13 +23,15 @@
     "mongodb": "^3.6.4",
     "mongoose": "^5.11.17",
     "morgan": "~1.9.1",
-    "mqtt": "^4.2.6",
+    "mqtt": "^4.2.8",
     "node-geocoder": "^3.27.0",
     "node-sass": "^5.0.0",
     "nodejs-base64-encode": "^1.1.0",
+    "nodemon": "^2.0.9",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
     "req-flash": "0.0.3",
-    "serve-favicon": "^2.5.0"
+    "serve-favicon": "^2.5.0",
+    "socket.io": "^4.1.2"
   }
 }
