@@ -28,7 +28,7 @@ app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, "/public")));
 app.use(favicon(path.join(__dirname, "public/images/virus.png")));
 app.use(flash());
 
@@ -37,7 +37,7 @@ app.use(express.urlencoded({ extended: false }));
 
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
-var businessRouter = require("./routes/businesses")(io);
+var businessRouter = require("./routes/businesses")
 var reviewRouter = require("./routes/reviews");
 
 // Express session

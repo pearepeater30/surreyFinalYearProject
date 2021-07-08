@@ -1,5 +1,5 @@
-<%- include("../includes/head")  %> 
-<%- include("../includes/nav")  %> 
+<% include("includes/head.ejs")  %> 
+<% include("includes/nav.ejs")  %> 
 <div class="hero is-primary">
   <div class="hero-body">
     <p class="title"><%= business.businessName %></p>
@@ -7,6 +7,6 @@
     <p class="subtitle">CO2 Average: <%= readingsAverage %></p>
   </div>
 </div>
-<%- include('../review/createReview', {businessId: business._id}) %> <%
-reviews.forEach(review => { %> <%- include('../review/displayReview', {review:
+ <% reviews.forEach(review => { %> <%- include('../review/displayReview', {review:
 review}) %> <% }) %>
+<%- include('../review/createReview', {businessId: business._id}) %>

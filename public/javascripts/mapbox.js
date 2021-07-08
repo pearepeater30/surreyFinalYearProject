@@ -7,6 +7,12 @@ const map = new mapboxgl.Map({
   center: [-71.157895, 42.707741],
 });
 
+var navControl = new mapboxgl.NavigationControl();
+
+let stores;
+
+map.addControl(navControl, "top-left");
+
 //function to get the store data from the databases
 async function getStores() {
   //fetch data using this route
@@ -15,7 +21,7 @@ async function getStores() {
   const data = await res.json();
 
   //store the data and
-  const stores = data.data.map((store) => {
+  stores = data.data.map((store) => {
     return {
       type: "Feature",
       geometry: {
@@ -29,11 +35,11 @@ async function getStores() {
         icon: "shop",
         storeId: store._id,
         storeName: store.businessName,
-        storeOwner: store.businessOwner.name
+        storeOwner: store.businessOwner.name,
       },
     };
   });
-
+  console.log(stores);
   loadMap(stores);
 }
 
@@ -87,6 +93,7 @@ function loadMap(stores) {
   map.on("mouseleave", "points", function () {
     map.getCanvas().style.cursor = "";
   });
-}
+
+}  
 
 getStores();

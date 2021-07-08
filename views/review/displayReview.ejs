@@ -1,9 +1,14 @@
-<article class="message is-dark">
-  <div class="message-header">
-    <p>Review</p>
-    <button class="delete" aria-label="delete"></button>
-  </div>
-  <div class="message-body">
-    <%= review.comment %> 
-  </div>
-</article>
+<div class="box">
+  <article class="media">
+    <div class="media-content">
+      <div class="content">
+        <p>
+          <strong><%= review.reviewCreatorName %> </strong>
+          <br>
+          <%= review.comment %> 
+        </p>
+      </div>
+      
+    </div>
+  </article>
+</div>
