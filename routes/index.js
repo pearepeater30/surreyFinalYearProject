@@ -8,8 +8,7 @@ router.get('/', function(req, res, next) {
 
 /* GET home page. */
 router.get('/dashboard', function(req, res, next) {
-  res.locals.currentUser = req.user;
-  res.render('index', { title: 'Dashboard'});
+  res.render('index', { title: 'Dashboard', currentUser: req.user});
 });
 
 

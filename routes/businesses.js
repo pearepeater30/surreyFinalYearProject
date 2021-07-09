@@ -2,6 +2,10 @@ const express = require("express");
 const router = express.Router();
 const { ensureAuthenticated } = require("../config/auth");
 const {
+  ensureBusinessOwner,
+  ensureCustomer,
+} = require("../middlewares/ensureBusinessOwner");
+const {
   getBusinesses,
   postBusinesses,
   openBusinesses,
@@ -13,22 +17,65 @@ const {
   getCO2Reading,
 } = require("../controller/businesses");
 
-router.get("/businesses", ensureAuthenticated, openBusinesses);
+router.get(
+  "/businesses",
+  ensureAuthenticated,
+  openBusinesses
+);
 
-router.get("/getbusinesses", ensureAuthenticated, getBusinesses);
+router.get(
+  "/getbusinesses",
+  ensureAuthenticated,
+  getBusinesses
+);
 
-router.get("/createbusiness", ensureAuthenticated, createBusinesses);
+router.get(
+  "/createbusiness",
+  ensureAuthenticated,
+  ensureBusinessOwner,
+  createBusinesses
+);
 
-router.post("/businesses", ensureAuthenticated, postBusinesses);
+router.post(
+  "/businesses",
+  ensureAuthenticated,
+  ensureBusinessOwner,
+  postBusinesses
+);
 
-router.get("/business/:businessId", ensureAuthenticated, getBusiness);
+router.get(
+  "/business/:businessId",
+  ensureAuthenticated,
+  ensureBusinessOwner,
+  getBusiness
+);
 
-router.get("/yourbusinesses", ensureAuthenticated, getBusinessesList);
+router.get(
+  "/yourbusinesses",
+  ensureAuthenticated,
+  ensureBusinessOwner,
+  getBusinessesList
+);
 
-router.get("/editbusiness/:businessId", ensureAuthenticated, showEditBusiness);
+router.get(
+  "/editbusiness/:businessId",
+  ensureAuthenticated,
+  ensureBusinessOwner,
+  showEditBusiness
+);
 
-router.post("/editbusiness/:businessId", ensureAuthenticated, postEditBusiness);
+router.post(
+  "/editbusiness/:businessId",
+  ensureAuthenticated,
+  ensureBusinessOwner,
+  postEditBusiness
+);
 
-router.get("/getCO2Reading/:businessId", ensureAuthenticated, getCO2Reading);
+router.get(
+  "/getCO2Reading/:businessId",
+  ensureAuthenticated,
+  ensureBusinessOwner,
+  getCO2Reading
+);
 
 module.exports = router;

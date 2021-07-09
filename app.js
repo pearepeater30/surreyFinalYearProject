@@ -96,7 +96,7 @@ const client = mqtt.connect({
 //this function receives and creates entries for CO2 Readings
 client.on("connect", function () {
   console.log("connected");
-  // this client subscribe has a wildcard in order to 
+  // this client subscribe has a wildcard in order to receive connections from multiple nodes
   // client.subscribe("noodlehapplication/devices/+/up");
   client.subscribe("noodlehapplication/devices/first-lorawan-node/up");
   client.on("message", function (topic, message) {
