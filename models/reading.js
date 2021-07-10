@@ -10,6 +10,10 @@ const readingSchema = new Schema({
   deviceNode: {
     type: String,
     required: true,
+  },
+  timestamp: {
+    type: Date,
+    required: true,
   }
 })
 

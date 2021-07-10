@@ -4,7 +4,7 @@ const { ensureAuthenticated } = require("../config/auth");
 const {
   ensureBusinessOwner,
   ensureCustomer,
-} = require("../middlewares/ensureBusinessOwner");
+} = require("../middlewares/ensureUserType");
 const {
   getBusinesses,
   postBusinesses,
@@ -46,7 +46,6 @@ router.post(
 router.get(
   "/business/:businessId",
   ensureAuthenticated,
-  ensureBusinessOwner,
   getBusiness
 );
 
@@ -74,7 +73,6 @@ router.post(
 router.get(
   "/getCO2Reading/:businessId",
   ensureAuthenticated,
-  ensureBusinessOwner,
   getCO2Reading
 );
 
