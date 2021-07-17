@@ -55,7 +55,8 @@ app.use(passport.session());
 // Connect to DB
 //process.env.DB_MONGO_ENV
 mongoose
-  .connect('mongodb+srv://noodleh:uk0cY811ic@cluster0.m6ge9.mongodb.net/fyp?retryWrites=true&w=majority', { useNewUrlParser: true })
+  .connect(process.env.DB_MONGO_ENV
+    , { useNewUrlParser: true })
   .then((result) => {
     console.log("Connected to DB");
   })
@@ -87,23 +88,23 @@ app.use(function (err, req, res, next) {
 
 //Connect to mqtt client
 const client = mqtt.connect({
-  host: "us-west.thethings.network",
+  host: "nam1.cloud.thethings.network",
   port: 1883,
-  username: "noodlehapplication",
-  password: "ttn-account-v2.YE4IJ8FOCgavdK8NM35bvROGeB43yXLllZTap8ZiqNw",
+  username: "fypapplication@ttn",
+  password: process.env.TTN_MQTT_PASSWORD
 });
 
 //this function receives and creates entries for CO2 Readings
 client.on("connect", function () {
   console.log("connected");
   // this client subscribe has a wildcard in order to receive connections from multiple nodes
-  // client.subscribe("noodlehapplication/devices/+/up");
-  client.subscribe("noodlehapplication/devices/first-lorawan-node/up");
+  client.subscribe("#");
+  // client.subscribe("noodlehapplication/devices/first-lorawan-node/up");
   client.on("message", function (topic, message) {
     const obj = JSON.parse(message);
     console.log(obj);
-    const co2Reading = encode.decode(obj.payload_raw, "base64");
-    const deviceNode = obj.hardware_serial;
+    const co2Reading = encode.decode(obj.uplink_message.frm_payload, "base64");
+    const deviceNode = obj.end_device_ids.dev_eui;
     const newReading = new Reading({ co2Reading, deviceNode });
     newReading
       .save()
