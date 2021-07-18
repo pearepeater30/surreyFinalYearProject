@@ -69,11 +69,4 @@ router.post(
   ensureBusinessOwner,
   postEditBusiness
 );
-
-router.get(
-  "/getCO2Reading/:businessId",
-  ensureAuthenticated,
-  getCO2Reading
-);
-
 module.exports = router;

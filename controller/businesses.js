@@ -83,17 +83,18 @@ exports.getBusiness = async (req, res, next) => {
     });
     const readingslength = co2Readings.length;
     const average = findingAverage(co2Readings, readingslength);
+    const normalizedResults = SAXifier(co2Readings)
     res.render("business/business-detail", {
       business: business,
       title: business.title,
       reviews: reviews,
       readingsAverage: parseFloat(average).toFixed(2),
+      normalizedResult: normalizedResults[normalizedResults.length - 1]
     });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Server error" });
   }
-  Reading.watch().on('change', change=> console.log(JSON.stringify(change)))
 };
 
 exports.showEditBusiness = async (req, res, next) => {
@@ -161,27 +162,7 @@ exports.getBusinessesList = async (req, res, next) => {
   }
 };
 
-exports.getCO2Reading = async (req, res, next) => {
-  try {
-    const business = await Business.findById(req.params.businessId);
-    const co2FromDBReadings = await Reading.find({
-      deviceNode: business.deviceNode,
-    });
-    const co2Readings = [];
-    co2FromDBReadings.forEach((reading) => {
-      co2Readings.push(reading.co2Reading);
-    });
-    const readingslength = co2Readings.length;
-    const average = findingAverage(co2Readings, readingslength);
-    return res.status(200).json({
-      average: average,
-    });
-  } 
-  catch {
-    console.error(err);
-    res.status(500).json({ error: "Server error" });
-  }
-};
+
 
 const findingAverage = (array) => {
   this.array = array;
@@ -193,15 +174,31 @@ const findingAverage = (array) => {
   return total;
 };
 
-const findingSAX = (array) => {
+const SAXifier = (array) => {
   this.array = array;
-  
+  this.length = this.array.length;
+  let SAXArray = []
+  mean = findingAverage(this.array);
+  stdev = findingstdev(this.array);
+  this.array.forEach((element) => {
+    value = (element-mean)/stdev
+    if(value < -0.43) {
+      SAXArray.push("a");
+    }
+    else if(value > 0.43) {
+      SAXArray.push("c");
+    }
+    else{
+      SAXArray.push("b");
+    }
+  })
+  return (SAXArray);
 }
 
 const findingstdev = (array) => {
   this.array = array;
   const mean = findingAverage(this.array);
-  const standardDev = 0;
+  var standardDev = 0;
 
   this.array.forEach((element) => {
     standardDev = (element - mean)**2 + standardDev;
