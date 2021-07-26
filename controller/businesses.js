@@ -84,6 +84,9 @@ exports.getBusiness = async (req, res, next) => {
     const readingslength = co2Readings.length;
     const average = findingAverage(co2Readings, readingslength);
     const normalizedResults = SAXifier(co2Readings)
+    console.log(normalizedResults)
+    console.log(average)
+
     res.render("business/business-detail", {
       business: business,
       title: business.title,
@@ -98,50 +101,66 @@ exports.getBusiness = async (req, res, next) => {
 };
 
 exports.showEditBusiness = async (req, res, next) => {
-  if (req.user.usertype == false) {
-    res.status(401).json({ error: "Unauthorized Action" });
-    res.redirect("/");
-  }
-  res.locals.currentUser = req.user;
   const businessId = req.params.businessId;
-  try {
-    const business = await Business.findById(businessId);
-    res.render("business/editBusiness", {
-      title: "Edit Business",
-      business: business,
+  business = await Business.find({_id: businessId, businessOwner: req.user._id})
+  console.log(business)
+  errors = []
+  if (business.length == 0) {
+    errors.push({ msg: "You do not have access to this" });
+    res.render("index", {
+      title: "Home",
+      errors: errors,
+      currentUser: req.user,
     });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Server error" });
+  }
+  else{
+    res.locals.currentUser = req.user;
+    try {
+      const business = await Business.findById(businessId);
+      res.render("business/editBusiness", {
+        title: "Edit Business",
+        business: business,
+      });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: "Server error" });
+    }
   }
 };
 
 exports.postEditBusiness = async (req, res, next) => {
   try {
-    if (req.user.usertype == false) {
-      res.status(401).json({ error: "Unauthorized Action" });
-      res.redirect("/");
+    errors = []
+    if (business.length == 0) {
+      errors.push({ msg: "You do not have access to this" });
+      res.render("index", {
+        title: "Home",
+        errors: errors,
+        currentUser: req.user,
+      });
     }
-    res.locals.currentUser = req.user;
-    const businessId = req.params.businessId;
-    const business = Business.findById(businessId);
-    console.log(req.body.address);
-    const loc = await geocoder.geocode(req.body.address);
-
-    await business.updateOne(
-      { _id: businessId },
-      {
-        businessName: req.body.businessName,
-        address: req.body.address,
-        deviceNode: req.body.deviceNode,
-        businessLocation: {
-          type: "Point",
-          coordinates: [loc[0].longitude, loc[0].latitude],
-          formattedAddress: loc[0].formattedAddress,
-        },
-      }
-    );
-    res.redirect("/yourbusinesses");
+    else{
+      res.locals.currentUser = req.user;
+      const businessId = req.params.businessId;
+      const business = Business.findById(businessId);
+      console.log(req.body.address);
+      const loc = await geocoder.geocode(req.body.address);
+  
+      await business.updateOne(
+        { _id: businessId },
+        {
+          businessName: req.body.businessName,
+          address: req.body.address,
+          deviceNode: req.body.deviceNode,
+          businessLocation: {
+            type: "Point",
+            coordinates: [loc[0].longitude, loc[0].latitude],
+            formattedAddress: loc[0].formattedAddress,
+          },
+        }
+      );
+      res.redirect("/yourbusinesses");
+    }
   } catch (err) {
     console.log(err);
     res.status(500).json({ error: "Server error" });
@@ -151,7 +170,7 @@ exports.postEditBusiness = async (req, res, next) => {
 exports.getBusinessesList = async (req, res, next) => {
   res.locals.currentUser = req.user;
   try {
-    const businesses = await Business.find({ businessOwner: req.user._id });
+    const businesses = await Business.find({ businessOwner: req.user._id }).populate('businessOwner');
     res.render("business/businessList", {
       title: "Edit Business",
       businesses: businesses,
@@ -163,7 +182,7 @@ exports.getBusinessesList = async (req, res, next) => {
 };
 
 
-
+//** Helper methods */ 
 const findingAverage = (array) => {
   this.array = array;
   var sum = 0;
@@ -182,6 +201,7 @@ const SAXifier = (array) => {
   stdev = findingstdev(this.array);
   this.array.forEach((element) => {
     value = (element-mean)/stdev
+    console.log(value)
     if(value < -0.43) {
       SAXArray.push("a");
     }
@@ -192,6 +212,7 @@ const SAXifier = (array) => {
       SAXArray.push("b");
     }
   })
+
   return (SAXArray);
 }
 
@@ -201,7 +222,8 @@ const findingstdev = (array) => {
   var standardDev = 0;
 
   this.array.forEach((element) => {
-    standardDev = (element - mean)**2 + standardDev;
+    standardDev = ((element - mean)**2) + standardDev;
   })
-  return (standardDev/this.array.length);
+  console.log("standard dev: " + standardDev/this.array.length)
+  return (Math.sqrt(standardDev/this.array.length));
 }
