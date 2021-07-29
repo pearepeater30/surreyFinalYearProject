@@ -24,23 +24,22 @@ exports.getBusinesses = async (req, res, next) => {
 
 //Route to post new businesses to the database
 exports.postBusinesses = async (req, res, next) => {
+  let { businessName, address } = req.body;
   let errors = [];
-  let { businessName, _id, address } = req.body;
   try {
-    if (!businessName || !_id || !address) {
+    if (!businessName || !address) {
       errors.push({ msg: "One or more entries are not filled in properly" });
     }
-    else if (errors.length > 0) {
+    if (errors.length > 0) {
       res.render("index", {
         title: "Home",
         errors: errors,
         currentUser: req.user,
       });
-    } 
-    else {
-      const business = await Business.create({
+    } else {
+      await Business.create({
         businessName: businessName,
-        businessOwner: _id,
+        businessOwner: req.user._id,
         address: address,
       });
       console.log("Created Business");
@@ -48,6 +47,7 @@ exports.postBusinesses = async (req, res, next) => {
     }
   } catch (err) {
     console.log(err);
+    res.status(500).json({ error: "Server error" });
   }
 };
 
@@ -83,16 +83,16 @@ exports.getBusiness = async (req, res, next) => {
     });
     const readingslength = co2Readings.length;
     const average = findingAverage(co2Readings, readingslength);
-    const normalizedResults = SAXifier(co2Readings)
-    console.log(normalizedResults)
-    console.log(average)
+    const normalizedResults = SAXifier(co2Readings);
+    console.log(normalizedResults);
+    console.log(average);
 
     res.render("business/business-detail", {
       business: business,
       title: business.title,
       reviews: reviews,
       readingsAverage: parseFloat(average).toFixed(2),
-      normalizedResult: normalizedResults[normalizedResults.length - 1]
+      normalizedResult: normalizedResults[normalizedResults.length - 1],
     });
   } catch (err) {
     console.error(err);
@@ -102,9 +102,12 @@ exports.getBusiness = async (req, res, next) => {
 
 exports.showEditBusiness = async (req, res, next) => {
   const businessId = req.params.businessId;
-  business = await Business.find({_id: businessId, businessOwner: req.user._id})
-  console.log(business)
-  errors = []
+  business = await Business.find({
+    _id: businessId,
+    businessOwner: req.user._id,
+  });
+  console.log(business);
+  errors = [];
   if (business.length == 0) {
     errors.push({ msg: "You do not have access to this" });
     res.render("index", {
@@ -112,8 +115,7 @@ exports.showEditBusiness = async (req, res, next) => {
       errors: errors,
       currentUser: req.user,
     });
-  }
-  else{
+  } else {
     res.locals.currentUser = req.user;
     try {
       const business = await Business.findById(businessId);
@@ -129,23 +131,23 @@ exports.showEditBusiness = async (req, res, next) => {
 };
 
 exports.postEditBusiness = async (req, res, next) => {
+  res.locals.currentUser = req.user;
+  let { businessName, address } = req.body;
+  const businessId = req.params.businessId;
+  const business = Business.findById(businessId);
+  console.log(req.body.address);
+  const loc = await geocoder.geocode(req.body.address);
   try {
-    errors = []
-    if (business.length == 0) {
-      errors.push({ msg: "You do not have access to this" });
+    if (!businessName || !address) {
+      errors.push({ msg: "One or more entries are not filled in properly" });
+    }
+    if (errors.length > 0) {
       res.render("index", {
         title: "Home",
         errors: errors,
         currentUser: req.user,
       });
-    }
-    else{
-      res.locals.currentUser = req.user;
-      const businessId = req.params.businessId;
-      const business = Business.findById(businessId);
-      console.log(req.body.address);
-      const loc = await geocoder.geocode(req.body.address);
-  
+    } else {
       await business.updateOne(
         { _id: businessId },
         {
@@ -159,8 +161,8 @@ exports.postEditBusiness = async (req, res, next) => {
           },
         }
       );
-      res.redirect("/yourbusinesses");
     }
+    res.redirect("/yourbusinesses");
   } catch (err) {
     console.log(err);
     res.status(500).json({ error: "Server error" });
@@ -170,7 +172,9 @@ exports.postEditBusiness = async (req, res, next) => {
 exports.getBusinessesList = async (req, res, next) => {
   res.locals.currentUser = req.user;
   try {
-    const businesses = await Business.find({ businessOwner: req.user._id }).populate('businessOwner');
+    const businesses = await Business.find({
+      businessOwner: req.user._id,
+    }).populate("businessOwner");
     res.render("business/businessList", {
       title: "Edit Business",
       businesses: businesses,
@@ -181,8 +185,7 @@ exports.getBusinessesList = async (req, res, next) => {
   }
 };
 
-
-//** Helper methods */ 
+//** Helper methods */
 const findingAverage = (array) => {
   this.array = array;
   var sum = 0;
@@ -196,25 +199,23 @@ const findingAverage = (array) => {
 const SAXifier = (array) => {
   this.array = array;
   this.length = this.array.length;
-  let SAXArray = []
+  let SAXArray = [];
   mean = findingAverage(this.array);
   stdev = findingstdev(this.array);
   this.array.forEach((element) => {
-    value = (element-mean)/stdev
-    console.log(value)
-    if(value < -0.43) {
+    value = (element - mean) / stdev;
+    console.log(value);
+    if (value < -0.43) {
       SAXArray.push("a");
-    }
-    else if(value > 0.43) {
+    } else if (value > 0.43) {
       SAXArray.push("c");
-    }
-    else{
+    } else {
       SAXArray.push("b");
     }
-  })
+  });
 
-  return (SAXArray);
-}
+  return SAXArray;
+};
 
 const findingstdev = (array) => {
   this.array = array;
@@ -222,8 +223,8 @@ const findingstdev = (array) => {
   var standardDev = 0;
 
   this.array.forEach((element) => {
-    standardDev = ((element - mean)**2) + standardDev;
-  })
-  console.log("standard dev: " + standardDev/this.array.length)
-  return (Math.sqrt(standardDev/this.array.length));
-}
+    standardDev = (element - mean) ** 2 + standardDev;
+  });
+  console.log("standard dev: " + standardDev / this.array.length);
+  return Math.sqrt(standardDev / this.array.length);
+};

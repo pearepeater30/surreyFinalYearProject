@@ -37,7 +37,7 @@ router.get(
 );
 
 router.post(
-  "/businesses",
+  "/createbusinesses",
   ensureAuthenticated,
   ensureBusinessOwner,
   postBusinesses

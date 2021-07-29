@@ -2,7 +2,19 @@
   <%- include('../includes/head.ejs') %>
 </head>
 <body>
-  <%- include('../includes/errorMessages.ejs')  %> 
+  <nav class="navbar is-primary">
+    <div class="navbar-brand">
+      <a href="/" class="navbar-item">
+        <figure class="image is-32x32">
+          <img class="is-rounded" src="/images/virus.svg">
+        </figure>
+        <p class="nav-title">Title of page</p>
+      </a>
+    </div>
+  </nav>
+  <% if (messages.error) { %>
+    <%= messages.error %> 
+  <% } %>
   <section class="hero is-primary is-fullheight">
     <div class="hero-body">
       <div class="container is-fluid">

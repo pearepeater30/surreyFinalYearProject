@@ -9,7 +9,22 @@
     <header id="showcase">
       <h1 class="title">Welcome to this page <%= (currentUser != null) ? currentUser.name : '' %> </h1>
       <p>This is a landing page</p>
-      <button href="/businesses" class="button is-primary is-light"><a href="/businesses" class="button">Start Exploring</a></button>
+      <% if (currentUser != null) { %>
+        <a class="button is-primary is-light" href="/businesses" class="button">Start Exploring</a>
+      <% } else { %>
+        <div class="field is-grouped">
+          <form>
+
+          </form>
+          <p class="control">
+            <a class="button is-primary" href="/users/register" class="button">Sign Up</a>
+
+          </p>
+          <p class="control">
+            <a class="button is-info" href="/users/login" class="button">Login</a>
+          </p>
+        </div>
+      <% } %>
     </header>
     <section class="introductory-text fadeup">
       <p class="has-background-info" id="intro-text">

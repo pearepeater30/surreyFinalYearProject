@@ -1,56 +1,53 @@
-<!DOCTYPE html>
-<html lang="en">
-    <%- include('../includes/head.ejs') %>
-  </head>
-  <body class="body-class">
-    <!-- Include NavBar-->
-    <%- include('../includes/nav.ejs')%>
-    <section class="hero is-primary is-fullheight">
-      <div class="hero-body">
-        <div class="container is-fluid">
-          <div class="columns is-centered">
-            <div class="box">
-                <h1 class="text-center mb-3">
-                  <i class="fas fa-briefcase"></i> Add Business
-                </h1>
-                <form action="/businesses" method="POST">
-                  <div class="field">
-                    <label for="businessName">Business Name</label>
-                    <input 
-                      type="businessName"
-                      id="bussinessName"
-                      name="businessName"
-                      class="form-control"
-                      placeholder="Enter Name Of Business"
-                     />
-                  </div>
-                  <div class="field">
-                    <label for="address">Address</label>
-                    <input 
-                      type="address"
-                      id="address"
-                      name="address"
-                      class="form-control"
-                      placeholder="Enter Address Of Business"
-                     />
-                  </div>
-                  <div class="field is-grouped">
-                    <p class="control">
-                      <button type="submit" class="button is-info">
-                        Create Business
-                      </button>
-                    </p>
-                    <p class="control">
-                      <a class="button is-info" href="businesses">
-                        Back
-                      </a>
-                    </p>
-                  </div>
-                </form>
-            </div>
+<%- include('../includes/head.ejs') %>
+</head>
+<body class="body-class">
+  <%- include('../includes/nav.ejs')%>
+  <% include('../includes/errorMessages.ejs') %> 
+  <section class="hero is-primary is-fullheight">
+    <div class="hero-body">
+      <div class="container is-fluid">
+        <div class="columns is-centered">
+          <div class="box">
+              <h1 class="text-center mb-3">
+                <i class="fas fa-briefcase"></i> Add Business
+              </h1>
+              <form action="/createbusinesses" method="POST">
+                <div class="field">
+                  <label for="businessName">Business Name</label>
+                  <input 
+                    type="businessName"
+                    id="bussinessName"
+                    name="businessName"
+                    class="form-control"
+                    placeholder="Enter Name Of Business"
+                    />
+                </div>
+                <div class="field">
+                  <label for="address">Address</label>
+                  <input 
+                    type="address"
+                    id="address"
+                    name="address"
+                    class="form-control"
+                    placeholder="Enter Address Of Business"
+                    />
+                </div>
+                <div class="field is-grouped">
+                  <p class="control">
+                    <button type="submit" class="button is-info">
+                      Create Business
+                    </button>
+                  </p>
+                  <p class="control">
+                    <a class="button is-info" href="businesses">
+                      Back
+                    </a>
+                  </p>
+                </div>
+              </form>
           </div>
         </div>
       </div>
-    </section>
-  </body>
-</html>
+    </div>
+  </section>
+</body>

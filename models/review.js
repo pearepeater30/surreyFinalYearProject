@@ -28,6 +28,7 @@ const reviewSchema = new Schema({
   creationTimeStamp: {
     type: Date,
     required: true,
+    default: Date.now()
   }
 });
 

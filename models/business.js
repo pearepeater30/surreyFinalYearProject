@@ -38,9 +38,6 @@ const businessSchema = new Schema({
 businessSchema.pre('save', async function(next) {
   //get location from geocoder middleware
   const loc = await geocoder.geocode(this.address)
-  .catch((e) => {
-    console.log("error geocoding")
-  }) ;
   //set the businesslocation field in the schema
   this.businessLocation = {
     type: 'Point',

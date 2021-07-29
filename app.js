@@ -2,16 +2,16 @@ var createError = require("http-errors");
 var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
+var bodyParser = require('body-parser'); 
 var logger = require("morgan");
 var favicon = require("serve-favicon");
 const mongoose = require("mongoose");
 const session = require("express-session");
 const passport = require("passport");
-const flash = require("connect-flash");
+const flash = require("express-flash");
 const dotenv = require("dotenv");
 const mqtt = require("mqtt");
 const encode = require("nodejs-base64-encode");
-const reqFlash = require('req-flash');
 const Reading = require("./models/reading");
 
 dotenv.config({ path: "./config/config.env" });
@@ -48,7 +48,6 @@ app.use(
     saveUninitialized: true,
   })
 );
-app.use(reqFlash());
 app.use(passport.initialize());
 app.use(passport.session());
 

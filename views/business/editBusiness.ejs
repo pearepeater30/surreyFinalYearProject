@@ -1,11 +1,13 @@
+<head>
 <%- include("../includes/head.ejs") %>
-<%- include("../includes/nav.ejs")  %> 
+</head>
+<% include("../includes/nav.ejs")  %>
 <div class="hero is-info">
   <div class="hero-body">
     <p class="title"><%= business.businessName %></p>
     <p class="subtitle"><%= business.address %></p>
   </div>
-  <section class="section">
+  <div class="container is-fluid has-background-info	" style="padding-left: 25px; ;">
     <form action="/editbusiness/<%= business._id %>" method="POST">
       <div class="field">
         <label for="businessName">Business Name</label>
@@ -47,11 +49,12 @@
           </button>
         </p>
         <p class="control">
-          <a class="button is-primary" href="/yourbusinesses">
+          <a class="button is-primary" href="/businesses">
             Back
           </a>
         </p>
       </div>
     </form>
-  </section>
+  </div>
+ 
 </div>

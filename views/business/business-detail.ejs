@@ -1,14 +1,4 @@
 <%- include("../includes/head.ejs")  %> 
-<style>
-  i {
-    width: 20px;
-    height: 20px;
-    position: relative;
-    top: 15px;
-    margin-right: 10px;
-    fill: #fff;
-  }
-</style>
 </head>
 <%- include("../includes/nav.ejs")  %> 
 <div class="hero is-primary">
@@ -18,25 +8,18 @@
     <p class="subtitle">CO2 Average: <%= readingsAverage %></p>
     <!-- if statement to check the quantity of CO2 -->
     <% if (normalizedResult === "c") { %>
+      <div>
+        <span><p class="subtitle">Current CO2 Amount: </p></span><p style="color: red" class="subtitle">High</p>
+      </div>
       
-      <span style="font-size: 3em; color: red;">
-        <i class="fas fa-circle"></i>
-      </span>
-      <p class="subtitle">Current CO2 Amount: High</p>
-
     <% } else if (normalizedResult === "b") { %>
-
-      <span style="font-size: 3em; color: yellow;">
-        <i class="fas fa-circle"></i>
-      </span>
-      <p class="subtitle">Current CO2 Amount: Medium</p>
+      <div>
+        <span><p class="subtitle">Current CO2 Amount: </p></span><p style="color: yellow" class="subtitle">Medium</p>
+      </div>
 
     <% } else if (normalizedResult === "a"){ %>
-
-      <span style="font-size: 3em; color: green;">
-        <i class="fas fa-circle"></i>
-      </span>
-      <p class="subtitle">Current CO2 Amount: Low</p>
+      <div>
+        <span><p class="subtitle">Current CO2 Amount: </p></span><p style="color: green" class="subtitle">Low</p>
 
     <% } %>
   </div>

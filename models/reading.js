@@ -5,7 +5,15 @@ const Schema = mongoose.Schema;
 const readingSchema = new Schema({
   co2Reading: {
     type: Number,
-    required: true
+    required: false
+  },
+  totalPeople:{
+    type: Number,
+    required: false
+  },
+  maskedPeople: {
+    type: Number,
+    required: false
   },
   deviceNode: {
     type: String,
@@ -14,7 +22,7 @@ const readingSchema = new Schema({
   timestamp: {
     type: Date,
     required: true,
-    default: Date.now
+    default: Date.now()
   }
 })
 

@@ -8,7 +8,12 @@
         <%= business.businessOwner.name %> 
       </p>
       <div>
-        <a href="/editbusiness/<%= business._id %>">Edit Business</a>
+        <a class="button is-primary" href="/editbusiness/<%= business._id %>">
+          <span class="icon">
+            <i class="fas fa-pen"></i>
+          </span>
+          <span>Edit Business</span> 
+        </a>
       </div>
     </section>
   </div>

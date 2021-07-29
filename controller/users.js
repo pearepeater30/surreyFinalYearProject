@@ -15,7 +15,6 @@ exports.postUser = (req, res, next) => {
   const { name, email, password, password2 } = req.body;
   //usertype stored as a variable, to modify to boolean
   var usertype = req.body.usertype;
-  console.log(usertype);
   let errors = [];
 
   if (!name || !email || !password || !password2) {
@@ -77,8 +76,11 @@ exports.postUser = (req, res, next) => {
                   if (!err) {
                     res.redirect("/");
                   } else {
-                    res.redirect("/users/register");
-                    console.log(req.flash());
+                    res.render("auth/register", {
+                      errors,
+                      currentUser: req.user,
+                      title: "Home"
+                    });
                   }
                 });
               })
@@ -90,12 +92,12 @@ exports.postUser = (req, res, next) => {
   }
 };
 
-exports.postLogin = (req, res, next) => {
+exports.postLogin = (req,res,next) => {
   passport.authenticate("local", {
     successRedirect: "/",
     failureRedirect: "/users/login",
     failureFlash: true,
-  })(req, res, next);
+  })(req,res,next)
 };
 
 exports.getLogout = (req, res, next) => {

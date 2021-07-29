@@ -32,8 +32,8 @@
 }
 
 #showcase h1 {
-
-  font-size: 3.2vh;
+  text-align: center;
+  position: relative;
   color: white;
 }
 
