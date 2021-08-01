@@ -12,9 +12,12 @@
       </a>
     </div>
   </nav>
-  <% if (messages.error) { %>
-    <%= messages.error %> 
-  <% } %>
+  <% if(messages.error){ %> <% messages.error.forEach(function(message) { %>
+    <div class="box">
+      <p>Error</p>
+      <%= message %>
+    </div>
+  <% }); %> <% } %>  
   <section class="hero is-primary is-fullheight">
     <div class="hero-body">
       <div class="container is-fluid">

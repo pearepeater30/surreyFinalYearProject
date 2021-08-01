@@ -1,6 +1,12 @@
 <%- include("../includes/head.ejs")  %> 
 </head>
 <%- include("../includes/nav.ejs")  %> 
+<% if(messages.info){ %> <% messages.info.forEach(function(message) { %>
+  <div class="box">
+    <p>Error</p>
+    <%= message %>
+  </div>
+<% }); %> <% } %>  
 <div class="hero is-primary">
   <div class="hero-body">
     <p class="title"><%= business.businessName %></p>

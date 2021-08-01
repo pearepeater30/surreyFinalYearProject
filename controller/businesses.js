@@ -84,12 +84,9 @@ exports.getBusiness = async (req, res, next) => {
     const readingslength = co2Readings.length;
     const average = findingAverage(co2Readings, readingslength);
     const normalizedResults = SAXifier(co2Readings);
-    console.log(normalizedResults);
-    console.log(average);
-
     res.render("business/business-detail", {
       business: business,
-      title: business.title,
+      title: business.businessName,
       reviews: reviews,
       readingsAverage: parseFloat(average).toFixed(2),
       normalizedResult: normalizedResults[normalizedResults.length - 1],
@@ -137,6 +134,7 @@ exports.postEditBusiness = async (req, res, next) => {
   const business = Business.findById(businessId);
   console.log(req.body.address);
   const loc = await geocoder.geocode(req.body.address);
+  let errors = [];
   try {
     if (!businessName || !address) {
       errors.push({ msg: "One or more entries are not filled in properly" });
@@ -204,7 +202,6 @@ const SAXifier = (array) => {
   stdev = findingstdev(this.array);
   this.array.forEach((element) => {
     value = (element - mean) / stdev;
-    console.log(value);
     if (value < -0.43) {
       SAXArray.push("a");
     } else if (value > 0.43) {
@@ -221,10 +218,8 @@ const findingstdev = (array) => {
   this.array = array;
   const mean = findingAverage(this.array);
   var standardDev = 0;
-
   this.array.forEach((element) => {
     standardDev = (element - mean) ** 2 + standardDev;
   });
-  console.log("standard dev: " + standardDev / this.array.length);
   return Math.sqrt(standardDev / this.array.length);
 };
