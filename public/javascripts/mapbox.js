@@ -63,6 +63,13 @@ function loadMap(stores) {
         "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
         "text-offset": [0, 0.9],
         "text-anchor": "top",
+        "text-size": {
+          "stops": [
+              [0, 0],
+              [5, 0],
+              [5.1, 10]
+          ]
+      }
       },
     });
   });

@@ -11,9 +11,8 @@
   <div class="hero-body">
     <p class="title"><%= business.businessName %></p>
     <p class="subtitle"><%= business.address %></p>
-    <p class="subtitle">CO2 Average: <%= readingsAverage %></p>
     <!-- if statement to check the quantity of CO2 -->
-    <% if (normalizedResult === "c") { %>
+    <% if (normalizedResults[0] === "c") { %>
       <div>
         <span><p class="subtitle">Current CO2 Amount: </p></span><p style="color: red" class="subtitle">High</p>
       </div>
@@ -28,6 +27,50 @@
         <span><p class="subtitle">Current CO2 Amount: </p></span><p style="color: green" class="subtitle">Low</p>
 
     <% } %>
+    <br>
+
+    <p class="subtitle">Total people who have entered: <%= maskNumbers[0] %></p>
+
+
+    <!-- if statement to check the number of people  -->
+    <% if (normalizedResults[1] === "c") { %>
+      <div>
+        <span><p class="subtitle">Current amount of People: </p></span><p style="color: red" class="subtitle">High</p>
+      </div>
+      
+    <% } else if (normalizedResult === "b") { %>
+      <div>
+        <span><p class="subtitle">Current amount of People: </p></span><p style="color: yellow" class="subtitle">Medium</p>
+      </div>
+
+    <% } else if (normalizedResult === "a"){ %>
+      <div>
+        <span><p class="subtitle">Current amount of People: </p></span><p style="color: green" class="subtitle">Low</p>
+
+    <% } %>
+
+    <br>
+
+    <p class="subtitle">People Who have entered wearing masks: <%= maskNumbers[1] %></p>
+
+    <!-- if statement to check the number of people  -->
+    <% if (normalizedResults[2] === "c") { %>
+      <div>
+        <span><p class="subtitle">Current amount of People: </p></span><p style="color: red" class="subtitle">High</p>
+      </div>
+      
+    <% } else if (normalizedResult === "b") { %>
+      <div>
+        <span><p class="subtitle">Current amount of People: </p></span><p style="color: yellow" class="subtitle">Medium</p>
+      </div>
+
+    <% } else if (normalizedResult === "a"){ %>
+      <div>
+        <span><p class="subtitle">Current amount of People: </p></span><p style="color: green" class="subtitle">Low</p>
+
+    <% } %>
+
+   
   </div>
 </div>
  <% reviews.forEach(review => { %> <%- include('../review/displayReview', {review:

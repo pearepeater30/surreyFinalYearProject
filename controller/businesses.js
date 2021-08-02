@@ -78,17 +78,27 @@ exports.getBusiness = async (req, res, next) => {
       deviceNode: business.deviceNode,
     });
     const co2Readings = [];
+    const peoplewhomstEnter = [];
+    const maskedpeoplewhomstEnter = [];
+    const ratio = [];
     co2FromDBReadings.forEach((reading) => {
       co2Readings.push(reading.co2Reading);
+      peoplewhomstEnter.push(reading.totalPeople);
+      maskedpeoplewhomstEnter.push(reading.maskedPeople);
     });
-    const readingslength = co2Readings.length;
-    const average = findingAverage(co2Readings, readingslength);
-    const normalizedResults = SAXifier(co2Readings);
+    let normalizedResults = []
+    let maskNumbers = []
+    normalizedResults.push(SAXifier(co2Readings)[co2Readings.length-1]);
+    normalizedResults.push(SAXifier(peoplewhomstEnter)[peoplewhomstEnter.length-1]);
+    normalizedResults.push(SAXifier(maskedpeoplewhomstEnter)[maskedpeoplewhomstEnter.length-1])
+    maskNumbers.push(peoplewhomstEnter.reduce((a, b) => a + b, 0))
+    maskNumbers.push(maskedpeoplewhomstEnter.reduce((a, b) => a + b, 0))
     res.render("business/business-detail", {
       business: business,
       title: business.businessName,
+      maskNumbers: maskNumbers,
+      normalizedResults: normalizedResults,
       reviews: reviews,
-      readingsAverage: parseFloat(average).toFixed(2),
       normalizedResult: normalizedResults[normalizedResults.length - 1],
     });
   } catch (err) {
@@ -223,3 +233,4 @@ const findingstdev = (array) => {
   });
   return Math.sqrt(standardDev / this.array.length);
 };
+
