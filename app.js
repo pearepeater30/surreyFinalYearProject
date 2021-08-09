@@ -100,21 +100,32 @@ client.on("connect", function () {
   client.subscribe("v3/fypapplication@ttn/devices/+/up");
   client.on("message", function (topic, message) {
     try{
+      //parse message received
       const obj = JSON.parse(message);
+      //get raw reading and decode it
       const co2Reading = encode.decode(obj.uplink_message.frm_payload, "base64");
-      const deviceNode = obj.end_device_ids.dev_eui;
+      //split the reading
       const processedReading = co2Reading.split(',');
-      const newReading = new Reading({ co2Reading: processedReading[0], totalPeople: processedReading[1], maskedPeople: processedReading[2], deviceNode: deviceNode });
-      console.log(processedReading);
-      newReading
-        .save()
-        .then((reading) => {
-          console.log("New Reading From Device: " + reading.deviceNode);
-        })
-        .catch((err) => console.log("F"));
+      const deviceNode = obj.end_device_ids.dev_eui;
+      if(processedReading.length == 3){
+        for(var i = 0; i < processedReading.length; i++) {
+          processedReading[i] = processedReading[i].replace(/[^\x00-\x7F]/g, "0");
+        }
+        //get the device node
+        //create the reading object
+        const newReading = new Reading({ co2Reading: processedReading[0], totalPeople: processedReading[1], maskedPeople: processedReading[2], deviceNode: deviceNode });
+        console.log(processedReading);
+        //save reading
+        newReading
+          .save()
+          .then((reading) => {
+            console.log("New Reading From Device: " + reading.deviceNode);
+          })
+          .catch((err) => console.log(err));
+      }
     }
     catch (err){
-      console.log("F");
+      console.log(err);
     }
   });
 });
