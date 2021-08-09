@@ -14,22 +14,26 @@
     <!-- if statement to check the quantity of CO2 -->
     <% if (normalizedResults[0] === "c") { %>
       <div>
-        <span><p class="subtitle">Current CO2 Amount: </p></span><p style="color: red" class="subtitle">High</p>
+        <span><p class="subtitle">Current Air Circulation in Building: </p></span><p style="color: red" class="subtitle">Bad</p>
       </div>
       
-    <% } else if (normalizedResult === "b") { %>
+    <% } else if (normalizedResults[0] === "b") { %>
       <div>
-        <span><p class="subtitle">Current CO2 Amount: </p></span><p style="color: yellow" class="subtitle">Medium</p>
+        <span><p class="subtitle">Current Air Circulation in Building: </p></span><p style="color: yellow" class="subtitle">Ok</p>
       </div>
 
-    <% } else if (normalizedResult === "a"){ %>
+    <% } else if (normalizedResults[0] === "a"){ %>
       <div>
-        <span><p class="subtitle">Current CO2 Amount: </p></span><p style="color: green" class="subtitle">Low</p>
+        <span><p class="subtitle">Current Air Circulation in Building: </p></span><p style="color: green" class="subtitle">Good</p>
+      </div>
 
+    <% } else if (normalizedResults[0] === "d"){ %>
+      <div>
+        <span><p class="subtitle">Current Air Circulation in Building: </p></span><p style="color: purple" class="subtitle">Very Bad</p>
     <% } %>
     <br>
 
-    <p class="subtitle">Total people who have entered: <%= maskNumbers[0] %></p>
+    <p class="subtitle">Total people who have entered this business: <%= peopleWhoEnter[0] %></p>
 
 
     <!-- if statement to check the number of people  -->
@@ -38,37 +42,27 @@
         <span><p class="subtitle">Current amount of People: </p></span><p style="color: red" class="subtitle">High</p>
       </div>
       
-    <% } else if (normalizedResult === "b") { %>
+    <% } else if (normalizedResults[1] === "b") { %>
       <div>
         <span><p class="subtitle">Current amount of People: </p></span><p style="color: yellow" class="subtitle">Medium</p>
       </div>
 
-    <% } else if (normalizedResult === "a"){ %>
+    <% } else if (normalizedResults[1] === "a"){ %>
       <div>
         <span><p class="subtitle">Current amount of People: </p></span><p style="color: green" class="subtitle">Low</p>
 
+    <% } else if (normalizedResults[1] === "d"){ %>
+      <div>
+        <span><p class="subtitle">Current amount of People: </p></span><p style="color: purple" class="subtitle">Very High</p>
     <% } %>
+    <br>
+
+    <p class="subtitle">Total People Who have entered wearing masks: <%= peopleWhoEnter[1] %></p>
 
     <br>
 
-    <p class="subtitle">People Who have entered wearing masks: <%= maskNumbers[1] %></p>
-
-    <!-- if statement to check the number of people  -->
-    <% if (normalizedResults[2] === "c") { %>
-      <div>
-        <span><p class="subtitle">Current amount of People: </p></span><p style="color: red" class="subtitle">High</p>
-      </div>
-      
-    <% } else if (normalizedResult === "b") { %>
-      <div>
-        <span><p class="subtitle">Current amount of People: </p></span><p style="color: yellow" class="subtitle">Medium</p>
-      </div>
-
-    <% } else if (normalizedResult === "a"){ %>
-      <div>
-        <span><p class="subtitle">Current amount of People: </p></span><p style="color: green" class="subtitle">Low</p>
-
-    <% } %>
+    <p class="subtitle">Carbon Dioxide Average: <%= co2Average %>ppm</p>
+    <p class="subtitle"> Current Percentage of mask wearers: <%= ratio %>% </p>
 
    
   </div>

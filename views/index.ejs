@@ -7,7 +7,7 @@
     <%- include('includes/errorMessages.ejs') %> 
     <%- include('includes/nav.ejs') %>
     <header id="showcase">
-      <h1 class="title">Welcome to this page <%= (currentUser != null) ? currentUser.name : '' %> </h1>
+      <h1 class="title">Welcome to CoviTrack<%= (currentUser != null) ? ', ' + currentUser.name : '' %> </h1>
       <p>This is a landing page</p>
       <% if (currentUser != null) { %>
         <a class="button is-primary is-light" href="/businesses" class="button">Start Exploring</a>

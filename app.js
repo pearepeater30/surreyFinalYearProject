@@ -96,22 +96,26 @@ const client = mqtt.connect({
 //this function receives and creates entries for CO2 Readings
 client.on("connect", function () {
   console.log("connected");
-  // this client subscribe has a wildcard in order to receive connections from multiple nodes
-  client.subscribe("#");
-  // client.subscribe("noodlehapplication/devices/first-lorawan-node/up");
+  // this client subscribe has a wildcard in order to receive data from multiple nodes
+  client.subscribe("v3/fypapplication@ttn/devices/+/up");
   client.on("message", function (topic, message) {
-    const obj = JSON.parse(message);
-    console.log(obj);
-    const co2Reading = encode.decode(obj.uplink_message.frm_payload, "base64");
-    const deviceNode = obj.end_device_ids.dev_eui;
-    const newReading = new Reading({ co2Reading, deviceNode });
-    newReading
-      .save()
-      .then((reading) => {
-        console.log("New Reading: " + reading.co2Reading);
-        console.log("From Device: " + reading.deviceNode);
-      })
-      .catch((err) => console.log(err));
+    try{
+      const obj = JSON.parse(message);
+      const co2Reading = encode.decode(obj.uplink_message.frm_payload, "base64");
+      const deviceNode = obj.end_device_ids.dev_eui;
+      const processedReading = co2Reading.split(',');
+      const newReading = new Reading({ co2Reading: processedReading[0], totalPeople: processedReading[1], maskedPeople: processedReading[2], deviceNode: deviceNode });
+      console.log(processedReading);
+      newReading
+        .save()
+        .then((reading) => {
+          console.log("New Reading From Device: " + reading.deviceNode);
+        })
+        .catch((err) => console.log("F"));
+    }
+    catch (err){
+      console.log("F");
+    }
   });
 });
 

@@ -9,11 +9,14 @@ const readingSchema = new Schema({
   },
   totalPeople:{
     type: Number,
-    required: false
+    required: false,
+    default: Date.now()
   },
   maskedPeople: {
     type: Number,
-    required: false
+    required: false,
+    default: 0
+
   },
   deviceNode: {
     type: String,

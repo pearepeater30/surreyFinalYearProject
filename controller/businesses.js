@@ -1,9 +1,7 @@
 const Business = require("../models/business");
 const Review = require("../models/review");
 const Reading = require("../models/reading");
-const mongoose = require("mongoose");
 const geocoder = require("../util/geocoder");
-const io = require("socket.io");
 
 //Route to get the businesses from the databases
 exports.getBusinesses = async (req, res, next) => {
@@ -26,10 +24,12 @@ exports.getBusinesses = async (req, res, next) => {
 exports.postBusinesses = async (req, res, next) => {
   let { businessName, address } = req.body;
   let errors = [];
+  //error checking
   try {
     if (!businessName || !address) {
       errors.push({ msg: "One or more entries are not filled in properly" });
     }
+    //show errors
     if (errors.length > 0) {
       res.render("index", {
         title: "Home",
@@ -51,6 +51,7 @@ exports.postBusinesses = async (req, res, next) => {
   }
 };
 
+//Route to open form to create business
 exports.createBusinesses = (req, res, next) => {
   res.locals.currentUser = req.user;
   res.render("business/addBusiness", { title: "Add Business" });
@@ -72,34 +73,47 @@ exports.getBusiness = async (req, res, next) => {
   res.locals.currentUser = req.user;
   const businessId = req.params.businessId;
   try {
+    //get data from the database
     const business = await Business.findById(businessId);
     const reviews = await Review.find({ business: businessId });
+    //find reading belonging to the device node of the business
     const co2FromDBReadings = await Reading.find({
       deviceNode: business.deviceNode,
     });
     const co2Readings = [];
     const peoplewhomstEnter = [];
     const maskedpeoplewhomstEnter = [];
-    const ratio = [];
+    //iterate through each reading
     co2FromDBReadings.forEach((reading) => {
       co2Readings.push(reading.co2Reading);
       peoplewhomstEnter.push(reading.totalPeople);
       maskedpeoplewhomstEnter.push(reading.maskedPeople);
     });
-    let normalizedResults = []
-    let maskNumbers = []
+    let ratio;
+    let co2Average;
+    let normalizedResults = [];
+    let peopleWhoEnter = [];
+    console.log(peoplewhomstEnter);
+    console.log(maskedpeoplewhomstEnter);
+    //calculate the normalized results
     normalizedResults.push(SAXifier(co2Readings)[co2Readings.length-1]);
     normalizedResults.push(SAXifier(peoplewhomstEnter)[peoplewhomstEnter.length-1]);
-    normalizedResults.push(SAXifier(maskedpeoplewhomstEnter)[maskedpeoplewhomstEnter.length-1])
-    maskNumbers.push(peoplewhomstEnter.reduce((a, b) => a + b, 0))
-    maskNumbers.push(maskedpeoplewhomstEnter.reduce((a, b) => a + b, 0))
+    //sum up all the values in the arrays
+    peopleWhoEnter.push(peoplewhomstEnter.reduce((a, b) => a + b, 0))
+    peopleWhoEnter.push(maskedpeoplewhomstEnter.reduce((a, b) => a + b, 0))
+    //average values
+    co2Average = findingAverage(co2Readings);
+    //calculate percentage of masked people vs non-masked people
+    ratio = ((maskedpeoplewhomstEnter)[maskedpeoplewhomstEnter.length-1] / (peoplewhomstEnter)[peoplewhomstEnter.length-1]) * 100
+    //render the page
     res.render("business/business-detail", {
       business: business,
       title: business.businessName,
-      maskNumbers: maskNumbers,
+      peopleWhoEnter: peopleWhoEnter,
       normalizedResults: normalizedResults,
       reviews: reviews,
-      normalizedResult: normalizedResults[normalizedResults.length - 1],
+      co2Average: co2Average.toFixed(2),
+      ratio: ratio.toFixed(2)
     });
   } catch (err) {
     console.error(err);
@@ -107,14 +121,16 @@ exports.getBusiness = async (req, res, next) => {
   }
 };
 
+//Route to show form to edit business
 exports.showEditBusiness = async (req, res, next) => {
   const businessId = req.params.businessId;
+  //see if the business the user is trying to edit belongs to the currently logged in user
   business = await Business.find({
     _id: businessId,
     businessOwner: req.user._id,
   });
-  console.log(business);
   errors = [];
+  //show warning if it doesn't
   if (business.length == 0) {
     errors.push({ msg: "You do not have access to this" });
     res.render("index", {
@@ -137,6 +153,7 @@ exports.showEditBusiness = async (req, res, next) => {
   }
 };
 
+//Route to post edit business request
 exports.postEditBusiness = async (req, res, next) => {
   res.locals.currentUser = req.user;
   let { businessName, address } = req.body;
@@ -145,17 +162,21 @@ exports.postEditBusiness = async (req, res, next) => {
   console.log(req.body.address);
   const loc = await geocoder.geocode(req.body.address);
   let errors = [];
+  //error checking
   try {
     if (!businessName || !address) {
       errors.push({ msg: "One or more entries are not filled in properly" });
     }
+    //show errors
     if (errors.length > 0) {
       res.render("index", {
         title: "Home",
         errors: errors,
         currentUser: req.user,
       });
-    } else {
+    } 
+    //update business
+    else {
       await business.updateOne(
         { _id: businessId },
         {
@@ -179,6 +200,7 @@ exports.postEditBusiness = async (req, res, next) => {
 
 exports.getBusinessesList = async (req, res, next) => {
   res.locals.currentUser = req.user;
+  //get all the businesses belonging to the currently logged in user
   try {
     const businesses = await Business.find({
       businessOwner: req.user._id,
@@ -212,15 +234,18 @@ const SAXifier = (array) => {
   stdev = findingstdev(this.array);
   this.array.forEach((element) => {
     value = (element - mean) / stdev;
-    if (value < -0.43) {
+    console.log(value);
+    if (value < -0.67) {
       SAXArray.push("a");
-    } else if (value > 0.43) {
-      SAXArray.push("c");
-    } else {
+    } else if (value <= 0 || isNaN(value)) {
       SAXArray.push("b");
+    } else if (value > 0.67) {
+      SAXArray.push("d");
+    } else {
+      SAXArray.push("c");
     }
   });
-
+  console.log(SAXArray)
   return SAXArray;
 };
 

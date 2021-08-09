@@ -25,8 +25,8 @@ exports.postUser = (req, res, next) => {
     errors.push({ msg: "Passwords don't match" });
   }
 
-  if (password.length < 6) {
-    errors.push({ msg: "Passwords should be at least 6 characters" });
+  if (password.length < 8) {
+    errors.push({ msg: "Passwords should be at least 8 characters" });
   }
   //modify usertype to boolean values instead of string
   if (usertype === "True") {
